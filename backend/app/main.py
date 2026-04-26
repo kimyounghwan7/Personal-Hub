@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.v1.endpoints import todos
+from app.api.v1.endpoints import todos, admin
 from app.core.config import settings
 
 app = FastAPI(title=settings.PROJECT_NAME)
@@ -21,6 +21,7 @@ app.add_middleware(
 
 # Include Routers
 app.include_router(todos.router, prefix="/api/v1/todos", tags=["todos"])
+app.include_router(admin.router, prefix="/api/v1/admin", tags=["admin"])
 
 @app.get("/")
 def read_root():

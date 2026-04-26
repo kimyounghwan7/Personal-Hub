@@ -18,11 +18,12 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <nav className="bg-gray-800 text-white p-4">
-          <div className="container mx-auto flex justify-between">
+          <div className="container mx-auto flex justify-between items-center">
             <div className="font-bold text-xl">Personal Hub</div>
             <div className="flex gap-4">
               <a href="/" className="hover:text-gray-300">About Me</a>
               <a href="/todos" className="hover:text-gray-300">Todos</a>
+              <a href="/admin" className="hover:text-gray-300 border border-gray-600 px-2 rounded bg-gray-700">Admin</a>
             </div>
           </div>
         </nav>

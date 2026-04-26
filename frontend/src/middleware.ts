@@ -9,14 +9,13 @@ export function middleware(request: NextRequest) {
   
   const token = request.cookies.get('sb-access-token');
   
-  // Example: Protect the /todos route
-  if (request.nextUrl.pathname.startsWith('/todos')) {
-    // If we wanted to enforce auth, we could uncomment this:
-    /*
+  // Example: Protect the /admin route (checking token exists at Edge)
+  // For role-based checks, ideally the JWT contains the role, or we fetch it.
+  // Here we just ensure they are logged in if they try to access /admin
+  if (request.nextUrl.pathname.startsWith('/admin')) {
     if (!token) {
-      return NextResponse.redirect(new URL('/login', request.url));
+      return NextResponse.redirect(new URL('/', request.url));
     }
-    */
   }
 
   const response = NextResponse.next();

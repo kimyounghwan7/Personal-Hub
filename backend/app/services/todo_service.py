@@ -1,39 +1,42 @@
 from fastapi import HTTPException
-from typing import List, Dict, Any
-from app.db.supabase import supabase
+from sqlalchemy.orm import Session
+from typing import List
+from app.models.todo import Todo
 from app.schemas.todo import TodoCreate, TodoUpdate
 
 class TodoService:
     @staticmethod
-    def get_todos(user_id: str) -> List[Dict[str, Any]]:
-        response = supabase.table("Todos").select("*").eq("user_id", user_id).execute()
-        return response.data
+    def get_todos(db: Session, user_id: str) -> List[Todo]:
+        return db.query(Todo).filter(Todo.user_id == user_id).all()
 
     @staticmethod
-    def create_todo(user_id: str, todo_in: TodoCreate) -> Dict[str, Any]:
+    def create_todo(db: Session, user_id: str, todo_in: TodoCreate) -> Todo:
         data = todo_in.model_dump(exclude_unset=True)
-        if data.get("due_date"):
-            data["due_date"] = data["due_date"].isoformat()
-        data["user_id"] = user_id
-        
-        response = supabase.table("Todos").insert(data).execute()
-        if not response.data:
-            raise HTTPException(status_code=500, detail="Failed to create todo")
-        return response.data[0]
+        db_todo = Todo(**data, user_id=user_id)
+        db.add(db_todo)
+        db.commit()
+        db.refresh(db_todo)
+        return db_todo
 
     @staticmethod
-    def update_todo(user_id: str, todo_id: str, todo_in: TodoUpdate) -> Dict[str, Any]:
-        data = todo_in.model_dump(exclude_unset=True)
-        if data.get("due_date"):
-            data["due_date"] = data["due_date"].isoformat()
+    def update_todo(db: Session, user_id: str, todo_id: str, todo_in: TodoUpdate) -> Todo:
+        db_todo = db.query(Todo).filter(Todo.id == todo_id, Todo.user_id == user_id).first()
+        if not db_todo:
+            raise HTTPException(status_code=404, detail="Todo not found")
             
-        response = supabase.table("Todos").update(data).eq("id", todo_id).eq("user_id", user_id).execute()
-        if not response.data:
-            raise HTTPException(status_code=404, detail="Todo not found")
-        return response.data[0]
+        data = todo_in.model_dump(exclude_unset=True)
+        for key, value in data.items():
+            setattr(db_todo, key, value)
+            
+        db.commit()
+        db.refresh(db_todo)
+        return db_todo
 
     @staticmethod
-    def delete_todo(user_id: str, todo_id: str) -> None:
-        response = supabase.table("Todos").delete().eq("id", todo_id).eq("user_id", user_id).execute()
-        if not response.data:
+    def delete_todo(db: Session, user_id: str, todo_id: str) -> None:
+        db_todo = db.query(Todo).filter(Todo.id == todo_id, Todo.user_id == user_id).first()
+        if not db_todo:
             raise HTTPException(status_code=404, detail="Todo not found")
+            
+        db.delete(db_todo)
+        db.commit()
