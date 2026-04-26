@@ -15,19 +15,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <nav className="bg-gray-800 text-white p-4">
-          <div className="container mx-auto flex justify-between items-center">
-            <div className="font-bold text-xl">Personal Hub</div>
-            <div className="flex gap-4">
-              <a href="/" className="hover:text-gray-300">About Me</a>
-              <a href="/todos" className="hover:text-gray-300">Todos</a>
-              <a href="/admin" className="hover:text-gray-300 border border-gray-600 px-2 rounded bg-gray-700">Admin</a>
+    <html lang="en" className="scroll-smooth">
+      <body className={`${inter.className} bg-[#0a0a0f] text-white antialiased`}>
+        {/* Glassmorphism Navbar */}
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0a0a0f]/60 backdrop-blur-md border-b border-white/10">
+          <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="/" className="font-extrabold text-xl tracking-tight text-white hover:text-blue-400 transition-colors">
+              Personal<span className="text-blue-500">Hub</span>
+            </a>
+            <div className="flex items-center gap-6 text-sm font-medium">
+              <a href="/todos" className="text-gray-300 hover:text-white transition-colors">Calendar</a>
+              <a href="/admin" className="text-purple-400 hover:text-purple-300 transition-colors border border-purple-500/30 px-3 py-1.5 rounded-full bg-purple-500/10 hover:bg-purple-500/20">Admin Panel</a>
             </div>
           </div>
         </nav>
-        <main className="container mx-auto p-4 min-h-screen">
+        
+        {/* Main Content (No top padding so hero goes behind navbar) */}
+        <main className="min-h-screen">
           {children}
         </main>
       </body>

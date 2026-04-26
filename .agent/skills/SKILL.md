@@ -24,7 +24,9 @@
 1. `backend/` 디렉토리를 초기화하고 FastAPI 기본 코드를 작성합니다.
 2. `backend.md`의 **[CRITICAL] 규칙**을 엄수하여 Session Pooler 주소를 사용하는 `.env` 세팅법을 안내하고, Alembic 마이그레이션 환경을 구축합니다.
 3. 프론트엔드와 백엔드의 API 통신(CORS) 코드를 작성합니다.
+4. **[Auto-Validation]** 작성 완료 후 사용자의 지시를 기다리지 말고, 즉시 로컬에 띄워진 Docker 컨테이너(`localhost:8000`)에 `curl` 등을 통해 직접 엔드포인트를 호출하여 API 정상 작동 여부를 스스로 검증하고 리포트합니다.
 
 ### Phase 4: CI/CD & Domain Setup
 1. `deployment.md` 규칙에 따라 Vercel 용 설정과 Render 용 `Dockerfile`, `render.yaml`을 생성합니다.
-2. 최종 커스텀 도메인 연결을 위한 DNS(A Record, CNAME) 세팅 체크리스트를 마크다운으로 출력하며 프로젝트를 마무리합니다.
+2. **[Auto-Validation]** 프론트엔드 컨테이너(`localhost:3000`)에 대해서도 브라우저 접속 테스트나 curl 등을 통해 UI가 정상적으로 렌더링되는지 먼저 확인합니다.
+3. 최종 커스텀 도메인 연결을 위한 DNS(A Record, CNAME) 세팅 체크리스트를 마크다운으로 출력하며 프로젝트를 마무리합니다.

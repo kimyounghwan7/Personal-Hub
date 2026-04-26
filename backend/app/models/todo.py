@@ -13,6 +13,7 @@ class Todo(Base):
     status = Column(String, default="pending")
     due_date = Column(DateTime(timezone=True), nullable=True)
     priority = Column(Integer, default=1)
+    google_event_id = Column(String, nullable=True)
     
     # Relationship (optional, if we want to load the user info)
     owner = relationship("Profile")
