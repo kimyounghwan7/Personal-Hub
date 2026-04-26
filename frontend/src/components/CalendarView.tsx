@@ -26,8 +26,8 @@ export default function CalendarView({ todos }: CalendarViewProps) {
       
       if (dayTodos.length > 0) {
         return (
-          <div className="flex flex-col items-center mt-1">
-            <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+          <div className="flex flex-col items-center">
+            <div className="todo-marker"></div>
           </div>
         );
       }
@@ -36,13 +36,13 @@ export default function CalendarView({ todos }: CalendarViewProps) {
   };
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-md border border-gray-100">
-      <h2 className="text-xl font-semibold mb-4">Calendar</h2>
+    <div className="bg-white/5 backdrop-blur-xl p-6 rounded-2xl shadow-2xl border border-white/10 text-white">
+      <h2 className="text-2xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">Calendar</h2>
       <div className="w-full max-w-sm mx-auto min-h-[300px]">
         {isMounted ? (
           <Calendar tileContent={tileContent} className="w-full border-none" locale="ko" />
         ) : (
-          <div className="flex items-center justify-center h-full text-gray-400">Loading Calendar...</div>
+          <div className="flex items-center justify-center h-full text-gray-500">Loading Calendar...</div>
         )}
       </div>
     </div>

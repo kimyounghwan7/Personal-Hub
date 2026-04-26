@@ -6,6 +6,7 @@ class UserResponse(BaseModel):
     id: str
     email: str
     role: str
+    is_approved: bool = False
     created_at: Optional[datetime] = None
 
     class Config:

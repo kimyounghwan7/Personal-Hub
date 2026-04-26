@@ -25,3 +25,13 @@ def delete_user(
     """Delete a user account. Admin only."""
     AdminService.delete_user(db=db, target_user_id=target_user_id)
     return {"message": "User deleted successfully"}
+
+@router.patch("/users/{target_user_id}/approve")
+def approve_user(
+    target_user_id: str,
+    admin_id: str = Depends(get_current_admin_user),
+    db: Session = Depends(get_db)
+):
+    """Approve a pending user account. Admin only."""
+    AdminService.approve_user(db=db, target_user_id=target_user_id)
+    return {"message": "User approved successfully"}

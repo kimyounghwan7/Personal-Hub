@@ -24,3 +24,12 @@ class AdminService:
         except Exception as e:
             db.rollback()
             raise HTTPException(status_code=500, detail=f"Failed to delete user: {str(e)}")
+
+    @staticmethod
+    def approve_user(db: Session, target_user_id: str) -> None:
+        profile = db.query(Profile).filter(Profile.id == target_user_id).first()
+        if not profile:
+            raise HTTPException(status_code=404, detail="User profile not found")
+        
+        profile.is_approved = True
+        db.commit()
