@@ -1,14 +1,14 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import todos
+from app.api.v1.endpoints import todos
+from app.core.config import settings
 
-app = FastAPI(title="Personal Hub API")
+app = FastAPI(title=settings.PROJECT_NAME)
 
 # Configure CORS
 origins = [
-    "http://localhost:3000",
+    settings.FRONTEND_URL,
     "http://127.0.0.1:3000",
-    # Add production frontend URL here later
 ]
 
 app.add_middleware(
@@ -19,8 +19,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(todos.router)
+# Include Routers
+app.include_router(todos.router, prefix="/api/v1/todos", tags=["todos"])
 
 @app.get("/")
 def read_root():
-    return {"message": "Welcome to Personal Hub API"}
+    return {"message": f"Welcome to {settings.PROJECT_NAME}"}
