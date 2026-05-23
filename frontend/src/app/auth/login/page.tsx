@@ -2,7 +2,14 @@
 
 import { useState } from 'react';
 import { supabase } from '@/lib/supabase';
-import api from '@/lib/api';
+
+const GENERIC_SIGN_IN_ERROR = 'Authentication failed. Please try again.';
+const GENERIC_SIGN_UP_ERROR = 'Unable to complete sign up right now. Please try again.';
+const SIGN_UP_CONFIRMATION_MESSAGE = 'Registration submitted. Check your email for verification, then wait for admin approval.';
+
+function getSafeAuthMessage(isSignUp: boolean) {
+  return isSignUp ? GENERIC_SIGN_UP_ERROR : GENERIC_SIGN_IN_ERROR;
+}
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -18,18 +25,25 @@ export default function LoginPage() {
 
     try {
       if (isSignUp) {
-        const { error } = await supabase.auth.signUp({ email, password });
+        const { data, error } = await supabase.auth.signUp({ email, password });
         if (error) throw error;
 
-        setMessage('Registration successful! Please wait for admin approval.');
+        const hasRealUser = Boolean(data.user?.id) && (data.user?.identities?.length ?? 0) > 0;
+
+        // If email confirmation is disabled, Supabase auto-logins and returns a session
+        if (data.session && hasRealUser) {
+          window.location.href = '/todos';
+        } else {
+          setMessage(SIGN_UP_CONFIRMATION_MESSAGE);
+        }
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
 
         window.location.href = '/todos';
       }
-    } catch (err: any) {
-      setMessage(err.message || 'Authentication failed');
+    } catch {
+      setMessage(getSafeAuthMessage(isSignUp));
     } finally {
       setLoading(false);
     }
@@ -44,7 +58,7 @@ export default function LoginPage() {
       }
     });
     if (error) {
-      setMessage(error.message);
+      setMessage(GENERIC_SIGN_IN_ERROR);
     }
   };
 

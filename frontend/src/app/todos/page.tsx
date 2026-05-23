@@ -20,13 +20,18 @@ export default function TodosPage() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [newTodo, setNewTodo] = useState('');
   const [loading, setLoading] = useState(true);
-  const [authState, setAuthState] = useState<'checking' | 'unauthenticated' | 'pending_approval' | 'approved'>('checking');
+  const [authState, setAuthState] = useState<'checking' | 'unauthenticated' | 'pending_approval' | 'approved' | 'error'>('checking');
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
-    checkAuthAndFetch();
+    void checkAuthAndFetch();
   }, []);
 
   const checkAuthAndFetch = async () => {
+    setLoading(true);
+    setErrorMessage('');
+    setAuthState('checking');
+
     const { data: { session } } = await supabase.auth.getSession();
 
     if (!session) {
@@ -36,6 +41,8 @@ export default function TodosPage() {
     }
 
     try {
+      // Keep profile provisioning consistent across email/password and OAuth flows.
+      await api.post('/auth/profile-sync');
       const res = await api.get('/todos/');
       setTodos(res.data || []);
       setAuthState('approved');
@@ -46,7 +53,8 @@ export default function TodosPage() {
         setAuthState('unauthenticated');
       } else {
         console.error('Failed to fetch todos:', err);
-        setAuthState('approved');
+        setAuthState('error');
+        setErrorMessage('Failed to load your calendar and todos. Please refresh and try again.');
       }
     } finally {
       setLoading(false);
@@ -76,6 +84,26 @@ export default function TodosPage() {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-gray-400 text-lg">Loading...</div>
+      </div>
+    );
+  }
+
+  if (authState === 'error') {
+    return (
+      <div className="flex items-center justify-center min-h-screen px-4">
+        <div className="bg-white/5 backdrop-blur-xl p-10 rounded-2xl shadow-2xl border border-white/10 text-center max-w-md w-full">
+          <div className="text-5xl mb-6">⚠️</div>
+          <h2 className="text-2xl font-bold text-white mb-3">Calendar Unavailable</h2>
+          <p className="text-gray-400 mb-8">{errorMessage}</p>
+          <button
+            onClick={() => {
+              void checkAuthAndFetch();
+            }}
+            className="w-full px-6 py-3 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold hover:from-blue-500 hover:to-purple-500 transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)]"
+          >
+            Retry
+          </button>
+        </div>
       </div>
     );
   }

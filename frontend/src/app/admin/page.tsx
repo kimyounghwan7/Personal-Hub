@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import api from '@/lib/api';
+import { supabase } from '@/lib/supabase';
 
 type User = {
   id: string;
@@ -12,21 +14,42 @@ type User = {
 };
 
 export default function AdminDashboard() {
+  const router = useRouter();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    fetchUsers();
+    checkAuthAndFetchUsers();
   }, []);
 
-  const fetchUsers = async () => {
+  const checkAuthAndFetchUsers = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+
+    if (!session) {
+      router.replace('/auth/login');
+      setLoading(false);
+      return;
+    }
+
     try {
       const res = await api.get('/admin/users');
       setUsers(res.data || []);
     } catch (err: any) {
       console.error('Failed to fetch users:', err);
-      setError(err.response?.data?.detail || 'Failed to load users. Are you an admin?');
+      if (err.response?.status === 401) {
+        router.replace('/auth/login');
+        return;
+      }
+      if (err.response?.status === 403) {
+        if (err.response?.data?.detail === 'Waiting for admin approval') {
+          setError('Your account is waiting for admin approval.');
+        } else {
+          setError('You do not have permission to access the admin dashboard.');
+        }
+        return;
+      }
+      setError('Failed to load users. Please try again.');
     } finally {
       setLoading(false);
     }
