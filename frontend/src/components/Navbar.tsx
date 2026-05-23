@@ -5,14 +5,17 @@ import { supabase } from '@/lib/supabase';
 
 export default function Navbar() {
   const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
+      setLoading(false);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
+      setLoading(false);
     });
 
     return () => subscription.unsubscribe();
@@ -33,7 +36,9 @@ export default function Navbar() {
           <a href="/todos" className="text-gray-300 hover:text-white transition-colors">Calendar</a>
           <a href="/admin" className="text-purple-400 hover:text-purple-300 transition-colors border border-purple-500/30 px-3 py-1.5 rounded-full bg-purple-500/10 hover:bg-purple-500/20">Admin</a>
 
-          {user ? (
+          {loading ? (
+            <div className="w-[72px] h-[34px] animate-pulse bg-white/5 border border-white/10 rounded-full"></div>
+          ) : user ? (
             <button
               onClick={handleLogout}
               className="text-gray-400 hover:text-white transition-colors border border-white/10 px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10"

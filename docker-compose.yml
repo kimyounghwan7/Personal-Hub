@@ -23,6 +23,7 @@ services:
     ports:
       - "8000:8000"
     environment:
+      - ENVIRONMENT=local
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_KEY=${SUPABASE_KEY}
       - SUPABASE_JWT_SECRET=${SUPABASE_JWT_SECRET}

@@ -56,10 +56,15 @@ NEXT_PUBLIC_SUPABASE_URL=https://[당신의-프로젝트-ID].supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJh...
 SUPABASE_URL=https://[당신의-프로젝트-ID].supabase.co
 SUPABASE_KEY=eyJh... (service_role 키)
+SUPABASE_JWT_SECRET=your-jwt-secret-from-supabase-dashboard
 DATABASE_URL=postgresql://postgres.[당신의-프로젝트-ID]:[비밀번호]@aws-0-ap-northeast-2.pooler.supabase.com:6543/postgres
+ENVIRONMENT=local
 
 NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
+
+- `SUPABASE_JWT_SECRET`는 Supabase Dashboard의 JWT 설정 값과 일치해야 합니다.
+- 로컬 Docker 개발은 `ENVIRONMENT=local`을 사용하고, 배포 환경에서는 `production` 같은 비로컬 값을 명시하십시오.
 
 ### 2. 데이터베이스 스키마 마이그레이션 (Alembic)
 SQLAlchemy 기반의 스키마를 Supabase DB에 반영하기 위해 마이그레이션을 실행합니다.

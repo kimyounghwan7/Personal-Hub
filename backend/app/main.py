@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
-from app.api.v1.endpoints import todos, admin
+from app.api.v1.endpoints import todos, admin, auth
 from app.core.config import settings
 from app.db.database import SessionLocal
 from app.models.profile import Profile
@@ -50,6 +50,7 @@ app.add_middleware(
 # Include Routers
 app.include_router(todos.router, prefix="/api/v1/todos", tags=["todos"])
 app.include_router(admin.router, prefix="/api/v1/admin", tags=["admin"])
+app.include_router(auth.router, prefix="/api/v1/auth", tags=["auth"])
 
 @app.get("/")
 def read_root():
