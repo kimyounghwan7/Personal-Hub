@@ -37,3 +37,19 @@ def test_settings_reject_placeholder_jwt_secret_with_default_environment(monkeyp
             SUPABASE_JWT_SECRET="your-jwt-secret-from-supabase-dashboard",
             DATABASE_URL="postgresql://user:pass@localhost:5432/db",
         )
+
+
+def test_settings_normalize_admin_email_and_match_case_insensitively():
+    settings = Settings(
+        ENVIRONMENT="development",
+        SUPABASE_URL="https://example.supabase.co",
+        SUPABASE_KEY="service-role-key",
+        SUPABASE_JWT_SECRET="dummy_secret_for_local_dev",
+        DATABASE_URL="postgresql://user:pass@localhost:5432/db",
+        ADMIN_EMAIL=" Admin@Example.com ",
+    )
+
+    assert settings.normalized_admin_email == "admin@example.com"
+    assert settings.is_admin_email("admin@example.com") is True
+    assert settings.is_admin_email(" ADMIN@example.com ") is True
+    assert settings.is_admin_email("other@example.com") is False

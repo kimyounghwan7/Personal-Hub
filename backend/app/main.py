@@ -1,10 +1,10 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from app.api.v1.endpoints import todos, admin, auth
 from app.core.config import settings
 from app.db.database import SessionLocal
-from app.models.profile import Profile
+from app.services.auth_service import AuthService
 import logging
 
 logger = logging.getLogger(__name__)
@@ -12,20 +12,18 @@ logger = logging.getLogger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # --- Startup: Auto-promote admin if profile exists ---
-    if settings.ADMIN_EMAIL:
+    if settings.normalized_admin_email:
         db = SessionLocal()
         try:
-            profile = db.query(Profile).filter(Profile.email == settings.ADMIN_EMAIL).first()
+            profile, updated = AuthService.ensure_configured_admin(db)
+            admin_email = settings.ADMIN_EMAIL.strip()
             if profile:
-                if profile.role != "admin" or not profile.is_approved:
-                    profile.role = "admin"
-                    profile.is_approved = True
-                    db.commit()
-                    logger.info(f"[ADMIN] Auto-promoted {settings.ADMIN_EMAIL} to admin.")
+                if updated:
+                    logger.info(f"[ADMIN] Auto-promoted {admin_email} to admin.")
                 else:
-                    logger.info(f"[ADMIN] {settings.ADMIN_EMAIL} is already admin.")
+                    logger.info(f"[ADMIN] {admin_email} is already admin.")
             else:
-                logger.info(f"[ADMIN] Admin profile not found yet. Please sign up with: {settings.ADMIN_EMAIL}")
+                logger.info(f"[ADMIN] Admin profile not found yet. Please sign up with: {admin_email}")
         finally:
             db.close()
     yield
@@ -55,4 +53,3 @@ app.include_router(auth.router, prefix="/api/v1/auth", tags=["auth"])
 @app.get("/")
 def read_root():
     return {"message": f"Welcome to {settings.PROJECT_NAME}"}
-

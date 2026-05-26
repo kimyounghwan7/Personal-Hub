@@ -26,6 +26,13 @@ class AdminService:
             raise HTTPException(status_code=500, detail=f"Failed to delete user: {str(e)}")
 
     @staticmethod
+    def delete_user_as_admin(db: Session, admin_user_id: str, target_user_id: str) -> None:
+        if admin_user_id == target_user_id:
+            raise HTTPException(status_code=400, detail="Admins cannot delete their own account")
+
+        AdminService.delete_user(db=db, target_user_id=target_user_id)
+
+    @staticmethod
     def approve_user(db: Session, target_user_id: str) -> None:
         profile = db.query(Profile).filter(Profile.id == target_user_id).first()
         if not profile:

@@ -1,4 +1,4 @@
-"""add auth.users -> Profiles sync trigger
+"""add auth.users -> Profiles bootstrap trigger
 
 Revision ID: 2b4f0f7ac9e1
 Revises: 043d99a4bf12
@@ -21,7 +21,7 @@ def upgrade() -> None:
     """Upgrade schema."""
     op.execute(
         """
-        CREATE OR REPLACE FUNCTION public.handle_new_auth_user_profile_sync()
+        CREATE OR REPLACE FUNCTION public.handle_auth_user_profile_bootstrap()
         RETURNS TRIGGER
         LANGUAGE plpgsql
         SECURITY DEFINER
@@ -36,10 +36,7 @@ def upgrade() -> None:
                 FALSE,
                 COALESCE(NEW.raw_app_meta_data->>'provider', 'email')
             )
-            ON CONFLICT (id) DO UPDATE
-            SET
-                email = EXCLUDED.email,
-                provider = EXCLUDED.provider;
+            ON CONFLICT (id) DO NOTHING;
 
             RETURN NEW;
         END;
@@ -49,11 +46,12 @@ def upgrade() -> None:
 
     op.execute(
         """
+        DROP TRIGGER IF EXISTS on_auth_user_created_profile_bootstrap ON auth.users;
         DROP TRIGGER IF EXISTS on_auth_user_created_profile_sync ON auth.users;
-        CREATE TRIGGER on_auth_user_created_profile_sync
+        CREATE TRIGGER on_auth_user_created_profile_bootstrap
         AFTER INSERT ON auth.users
         FOR EACH ROW
-        EXECUTE FUNCTION public.handle_new_auth_user_profile_sync();
+        EXECUTE FUNCTION public.handle_auth_user_profile_bootstrap();
         """
     )
 
@@ -77,7 +75,9 @@ def downgrade() -> None:
     """Downgrade schema."""
     op.execute(
         """
+        DROP TRIGGER IF EXISTS on_auth_user_created_profile_bootstrap ON auth.users;
         DROP TRIGGER IF EXISTS on_auth_user_created_profile_sync ON auth.users;
+        DROP FUNCTION IF EXISTS public.handle_auth_user_profile_bootstrap();
         DROP FUNCTION IF EXISTS public.handle_new_auth_user_profile_sync();
         """
     )

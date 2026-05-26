@@ -1,6 +1,7 @@
 from fastapi import HTTPException, Header, Depends
 from sqlalchemy.orm import Session
 import jwt
+from dataclasses import dataclass
 from app.db.supabase import supabase
 from app.db.database import get_db
 from app.models.profile import Profile
@@ -9,6 +10,13 @@ from app.core.config import settings
 import logging
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass(frozen=True)
+class AuthenticatedUser:
+    user_id: str
+    email: str
+    provider: str = "email"
 
 
 def _is_dev_fallback_allowed() -> bool:
@@ -38,9 +46,17 @@ def _extract_bearer_token(authorization: str | None) -> str:
     return token.strip()
 
 
-def _decode_authenticated_user(token: str) -> tuple[str, str]:
+def _extract_provider(payload: dict | None) -> str:
+    app_metadata = (payload or {}).get("app_metadata")
+    if isinstance(app_metadata, dict) and app_metadata.get("provider"):
+        return app_metadata["provider"]
+    return "email"
+
+
+def _decode_authenticated_user(token: str) -> AuthenticatedUser:
     user_id = None
     email = None
+    provider = "email"
     credentials_exception = _credentials_exception()
 
     try:
@@ -54,6 +70,7 @@ def _decode_authenticated_user(token: str) -> tuple[str, str]:
         )
         user_id = payload.get("sub")
         email = payload.get("email")
+        provider = _extract_provider(payload)
     except jwt.InvalidSignatureError:
         if not _is_dev_fallback_allowed():
             logger.error("[SECURITY] JWT signature validation failed while fallback is disabled.")
@@ -68,6 +85,7 @@ def _decode_authenticated_user(token: str) -> tuple[str, str]:
                 raise credentials_exception
             user_id = user_response.user.id
             email = user_response.user.email
+            provider = _extract_provider({"app_metadata": getattr(user_response.user, "app_metadata", None)})
         except HTTPException:
             raise
         except Exception:
@@ -79,30 +97,54 @@ def _decode_authenticated_user(token: str) -> tuple[str, str]:
     if not user_id or not email:
         raise credentials_exception
 
-    return user_id, email
+    return AuthenticatedUser(user_id=user_id, email=email, provider=provider)
+
+
+def get_current_authenticated_user(
+    authorization: str = Header(None),
+):
+    token = _extract_bearer_token(authorization)
+    return _decode_authenticated_user(token)
 
 
 def get_current_authenticated_profile(
-    authorization: str = Header(None),
+    authenticated_user: AuthenticatedUser | str = Depends(get_current_authenticated_user),
     db: Session = Depends(get_db)
 ) -> Profile:
-    token = _extract_bearer_token(authorization)
-    user_id, email = _decode_authenticated_user(token)
-    return AuthService.sync_profile(db=db, user_id=user_id, email=email)
+    if isinstance(authenticated_user, str):
+        authenticated_user = get_current_authenticated_user(authenticated_user)
+
+    return AuthService.ensure_profile(
+        db=db,
+        user_id=authenticated_user.user_id,
+        email=authenticated_user.email,
+        provider=authenticated_user.provider,
+    )
+
+
+def get_current_approved_profile(
+    profile: Profile = Depends(get_current_authenticated_profile),
+) -> Profile:
+    if not profile.is_approved:
+        raise HTTPException(status_code=403, detail="Waiting for admin approval")
+    return profile
 
 def get_current_user_id(
-    profile: Profile = Depends(get_current_authenticated_profile),
+    profile: Profile = Depends(get_current_approved_profile),
 ) -> str:
     if not profile.is_approved:
         raise HTTPException(status_code=403, detail="Waiting for admin approval")
-
     return profile.id
 
-def get_current_admin_user(
-    user_id: str = Depends(get_current_user_id),
-    db: Session = Depends(get_db)
-) -> str:
-    profile = db.query(Profile).filter(Profile.id == user_id).first()
-    if not profile or profile.role != "admin":
+
+def get_current_admin_profile(
+    profile: Profile = Depends(get_current_approved_profile),
+) -> Profile:
+    if profile.role != "admin":
         raise HTTPException(status_code=403, detail="Not enough permissions")
-    return user_id
+    return profile
+
+def get_current_admin_user(
+    profile: Profile = Depends(get_current_admin_profile),
+) -> str:
+    return profile.id

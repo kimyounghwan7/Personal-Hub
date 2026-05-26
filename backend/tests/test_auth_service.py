@@ -29,7 +29,7 @@ def test_sync_profile_promotes_admin_email(monkeypatch):
 
     monkeypatch.setattr("app.services.auth_service.settings.ADMIN_EMAIL", "admin@example.com")
 
-    profile = AuthService.sync_profile(mock_db, "user-2", "admin@example.com")
+    profile = AuthService.sync_profile(mock_db, "user-2", "ADMIN@example.com")
 
     assert profile.role == "admin"
     assert profile.is_approved is True
@@ -39,7 +39,7 @@ def test_sync_profile_promotes_admin_email(monkeypatch):
 
 def test_sync_profile_returns_existing_profile_without_update(monkeypatch):
     mock_db = MagicMock()
-    existing_profile = Profile(id="user-3", email="user3@example.com", role="user", is_approved=False)
+    existing_profile = Profile(id="user-3", email="user3@example.com", role="user", is_approved=False, provider="email")
     mock_db.query.return_value.filter.return_value.first.return_value = existing_profile
 
     monkeypatch.setattr("app.services.auth_service.settings.ADMIN_EMAIL", "admin@example.com")
@@ -49,3 +49,47 @@ def test_sync_profile_returns_existing_profile_without_update(monkeypatch):
     assert profile is existing_profile
     mock_db.commit.assert_not_called()
     mock_db.refresh.assert_not_called()
+
+
+def test_ensure_profile_does_not_sync_existing_identity_fields(monkeypatch):
+    mock_db = MagicMock()
+    existing_profile = Profile(
+        id="user-4",
+        email="stale@example.com",
+        role="user",
+        is_approved=False,
+        provider="email",
+    )
+    mock_db.query.return_value.filter.return_value.first.return_value = existing_profile
+
+    monkeypatch.setattr("app.services.auth_service.settings.ADMIN_EMAIL", "admin@example.com")
+
+    profile = AuthService.ensure_profile(mock_db, "user-4", "fresh@example.com", "google")
+
+    assert profile is existing_profile
+    assert profile.email == "stale@example.com"
+    assert profile.provider == "email"
+    mock_db.commit.assert_not_called()
+    mock_db.refresh.assert_not_called()
+
+
+def test_sync_profile_updates_existing_identity_fields(monkeypatch):
+    mock_db = MagicMock()
+    existing_profile = Profile(
+        id="user-5",
+        email="old@example.com",
+        role="user",
+        is_approved=False,
+        provider="email",
+    )
+    mock_db.query.return_value.filter.return_value.first.return_value = existing_profile
+
+    monkeypatch.setattr("app.services.auth_service.settings.ADMIN_EMAIL", "admin@example.com")
+
+    profile = AuthService.sync_profile(mock_db, "user-5", "new@example.com", "google")
+
+    assert profile is existing_profile
+    assert profile.email == "new@example.com"
+    assert profile.provider == "google"
+    mock_db.commit.assert_called_once()
+    mock_db.refresh.assert_called_once_with(profile)
