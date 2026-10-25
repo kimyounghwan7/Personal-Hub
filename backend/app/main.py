@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
+from sqlalchemy.exc import SQLAlchemyError
 from app.api.v1.endpoints import todos, admin, auth
 from app.core.config import settings
 from app.db.database import SessionLocal
@@ -11,19 +12,19 @@ logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # --- Startup: Auto-promote admin if profile exists ---
     if settings.normalized_admin_email:
         db = SessionLocal()
         try:
             profile, updated = AuthService.ensure_configured_admin(db)
             admin_email = settings.ADMIN_EMAIL.strip()
-            if profile:
-                if updated:
-                    logger.info(f"[ADMIN] Auto-promoted {admin_email} to admin.")
-                else:
-                    logger.info(f"[ADMIN] {admin_email} is already admin.")
+            if profile and updated:
+                logger.info(f"[ADMIN] Auto-promoted {admin_email} to admin.")
+            elif profile:
+                logger.info(f"[ADMIN] {admin_email} is already admin.")
             else:
                 logger.info(f"[ADMIN] Admin profile not found yet. Please sign up with: {admin_email}")
+        except SQLAlchemyError as error:
+            logger.warning(f"[ADMIN] Skipping startup admin check because database is unreachable: {error}")
         finally:
             db.close()
     yield

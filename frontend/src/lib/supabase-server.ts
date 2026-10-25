@@ -12,7 +12,8 @@ type ServerProfile = {
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-const apiUrl = process.env.NEXT_PUBLIC_API_URL?.trim();
+const internalApiUrl = process.env.INTERNAL_API_URL?.trim();
+const publicApiUrl = process.env.NEXT_PUBLIC_API_URL?.trim();
 
 function getSupabaseEnv() {
   if (!supabaseUrl || !supabaseAnonKey) {
@@ -26,7 +27,10 @@ function getSupabaseEnv() {
 }
 
 function getApiBaseUrl() {
-  const baseUrl = apiUrl || (process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : undefined);
+  const baseUrl =
+    internalApiUrl ||
+    publicApiUrl ||
+    (process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : undefined);
 
   if (!baseUrl) {
     throw new Error('NEXT_PUBLIC_API_URL is required outside development.');
