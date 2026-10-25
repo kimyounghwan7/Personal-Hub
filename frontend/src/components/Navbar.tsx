@@ -23,14 +23,14 @@ export default function Navbar() {
   const isAdminActive = pathname?.startsWith('/admin');
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 border-b border-emerald-200/10 bg-[#070c0a]/80 backdrop-blur-2xl">
+    <header className="fixed top-0 left-0 right-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur-md shadow-[0_1px_4px_rgba(15,23,42,0.03)]">
       <div className="max-w-6xl mx-auto px-6 h-16 flex justify-between items-center">
         <Link href="/" className="group flex items-center gap-2.5">
-          <div className="h-9 w-9 rounded-xl border border-[#8ee3be]/35 bg-[#8ee3be]/15 flex items-center justify-center shadow-[0_0_20px_rgba(142,227,190,0.2)] group-hover:bg-[#8ee3be]/25 transition-colors">
-            <Leaf className="h-4 w-4 text-[#8ee3be]" />
+          <div className="h-9 w-9 rounded-xl border border-[#b6e2cf] bg-[#e6f4ee] flex items-center justify-center shadow-sm group-hover:bg-[#d6ede3] transition-colors">
+            <Leaf className="h-4 w-4 text-[#18865b]" />
           </div>
-          <span className="font-extrabold text-lg tracking-tight text-white">
-            Personal<span className="text-[#8ee3be]">Hub</span>
+          <span className="font-extrabold text-lg tracking-tight text-[#191f28]">
+            Personal<span className="text-[#18865b]">Hub</span>
           </span>
         </Link>
 
@@ -42,7 +42,7 @@ export default function Navbar() {
             className="rounded-full px-3.5"
           >
             <Link href="/todos">
-              <Calendar className="h-4 w-4 text-[#8ee3be]" />
+              <Calendar className="h-4 w-4 text-[#18865b]" />
               Workspace
             </Link>
           </Button>
@@ -55,7 +55,7 @@ export default function Navbar() {
               className="rounded-full px-3.5"
             >
               <Link href="/admin">
-                <ShieldCheck className="h-3.5 w-3.5 text-[#8ee3be]" />
+                <ShieldCheck className="h-3.5 w-3.5 text-[#18865b]" />
                 Admin
               </Link>
             </Button>
@@ -63,7 +63,7 @@ export default function Navbar() {
 
           {status === 'loading' ? (
             <Badge variant="outline" className="py-1 px-3">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#8ee3be] animate-pulse" />
+              <span className="h-1.5 w-1.5 rounded-full bg-[#18865b] animate-pulse" />
               Syncing…
             </Badge>
           ) : status === 'authenticated' ? (

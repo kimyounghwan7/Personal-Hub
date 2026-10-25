@@ -89,8 +89,8 @@ export default function AdminDashboardClient() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen px-4 bg-subtle-grid">
-        <Badge variant="outline" className="py-2 px-4 text-sm">
-          <span className="h-2 w-2 rounded-full bg-[#8ee3be] animate-pulse" />
+        <Badge variant="outline" className="py-2 px-4 text-sm bg-white shadow-sm border-slate-200 text-slate-700">
+          <span className="h-2 w-2 rounded-full bg-[#18865b] animate-pulse" />
           Loading admin dashboard…
         </Badge>
       </div>
@@ -100,11 +100,11 @@ export default function AdminDashboardClient() {
   if (error) {
     return (
       <div className="flex items-center justify-center min-h-screen px-4 bg-subtle-grid">
-        <Card className="text-center max-w-md w-full p-4">
+        <Card className="text-center max-w-md w-full p-4 bg-white border-slate-200 shadow-sm">
           <CardHeader className="items-center">
-            <ShieldAlert className="h-12 w-12 text-rose-300 mb-2" />
-            <CardTitle>Admin access unavailable</CardTitle>
-            <CardDescription className="pt-2">{error}</CardDescription>
+            <ShieldAlert className="h-12 w-12 text-rose-500 mb-2" />
+            <CardTitle className="text-slate-900">Admin access unavailable</CardTitle>
+            <CardDescription className="pt-2 text-slate-600">{error}</CardDescription>
           </CardHeader>
         </Card>
       </div>
@@ -118,44 +118,44 @@ export default function AdminDashboardClient() {
     <div className="min-h-screen bg-subtle-grid pt-24 pb-16 px-4">
       <div className="max-w-6xl mx-auto space-y-6">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <Card className="p-5 flex items-center justify-between">
+          <Card className="p-5 flex items-center justify-between bg-white border-slate-200 shadow-[0_2px_10px_rgba(15,23,42,0.04)]">
             <div>
-              <div className="text-xs font-medium text-emerald-100/60">Registered Accounts</div>
-              <div className="text-2xl font-bold text-white mt-1">{users.length}</div>
+              <div className="text-xs font-medium text-slate-500">Registered Accounts</div>
+              <div className="text-2xl font-bold text-slate-900 mt-1">{users.length}</div>
             </div>
-            <div className="h-10 w-10 rounded-xl bg-[#8ee3be]/12 border border-[#8ee3be]/30 flex items-center justify-center text-[#8ee3be]">
+            <div className="h-10 w-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-700">
               <Users className="h-5 w-5" />
             </div>
           </Card>
 
-          <Card className="p-5 flex items-center justify-between">
+          <Card className="p-5 flex items-center justify-between bg-white border-slate-200 shadow-[0_2px_10px_rgba(15,23,42,0.04)]">
             <div>
-              <div className="text-xs font-medium text-emerald-100/60">Approved Active</div>
-              <div className="text-2xl font-bold text-[#a7f3d0] mt-1">{approvedCount}</div>
+              <div className="text-xs font-medium text-slate-500">Approved Active</div>
+              <div className="text-2xl font-bold text-[#18865b] mt-1">{approvedCount}</div>
             </div>
-            <div className="h-10 w-10 rounded-xl bg-[#8ee3be]/12 border border-[#8ee3be]/30 flex items-center justify-center text-[#8ee3be]">
+            <div className="h-10 w-10 rounded-xl bg-[#e6f4ee] border border-[#b6e2cf] flex items-center justify-center text-[#18865b]">
               <ShieldCheck className="h-5 w-5" />
             </div>
           </Card>
 
-          <Card className="p-5 flex items-center justify-between">
+          <Card className="p-5 flex items-center justify-between bg-white border-slate-200 shadow-[0_2px_10px_rgba(15,23,42,0.04)]">
             <div>
-              <div className="text-xs font-medium text-emerald-100/60">Pending Approval</div>
-              <div className="text-2xl font-bold text-amber-200 mt-1">{pendingCount}</div>
+              <div className="text-xs font-medium text-slate-500">Pending Approval</div>
+              <div className="text-2xl font-bold text-amber-700 mt-1">{pendingCount}</div>
             </div>
-            <div className="h-10 w-10 rounded-xl bg-amber-400/12 border border-amber-300/30 flex items-center justify-center text-amber-200">
+            <div className="h-10 w-10 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700">
               <Clock className="h-5 w-5" />
             </div>
           </Card>
         </div>
 
-        <Card>
+        <Card className="bg-white border-slate-200 shadow-[0_2px_10px_rgba(15,23,42,0.04)]">
           <CardHeader className="flex flex-row items-center justify-between space-y-0">
             <div>
-              <CardTitle className="text-2xl sm:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#d8f9e9] via-[#8ee3be] to-[#6ee7b7]">
+              <CardTitle className="text-2xl sm:text-3xl font-bold text-slate-900">
                 Admin Dashboard — User Access Control
               </CardTitle>
-              <CardDescription className="mt-1.5">
+              <CardDescription className="mt-1.5 text-slate-500">
                 Approve pending registrations and enforce role-based access boundaries.
               </CardDescription>
             </div>
@@ -177,10 +177,10 @@ export default function AdminDashboardClient() {
               <TableBody>
                 {users.map((user) => (
                   <TableRow key={user.id}>
-                    <TableCell className="text-emerald-100/45 font-mono text-xs">
+                    <TableCell className="text-slate-400 font-mono text-xs">
                       {user.id.slice(0, 8)}...
                     </TableCell>
-                    <TableCell className="font-medium text-emerald-50">{user.email}</TableCell>
+                    <TableCell className="font-medium text-slate-800">{user.email}</TableCell>
                     <TableCell>
                       <Badge variant={user.role === 'admin' ? 'default' : 'outline'}>
                         {user.role}
@@ -189,17 +189,17 @@ export default function AdminDashboardClient() {
                     <TableCell>
                       {user.is_approved ? (
                         <Badge variant="success">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#8ee3be]" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#18865b]" />
                           Approved
                         </Badge>
                       ) : (
                         <Badge variant="warning">
-                          <span className="w-1.5 h-1.5 rounded-full bg-amber-300 animate-pulse" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
                           Pending
                         </Badge>
                       )}
                     </TableCell>
-                    <TableCell className="text-emerald-100/60">
+                    <TableCell className="text-slate-500">
                       {new Date(user.created_at).toLocaleDateString()}
                     </TableCell>
                     <TableCell className="text-right">

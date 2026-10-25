@@ -90,19 +90,17 @@ export default function LoginPageClient({ nextPath }: { nextPath: string }) {
 
   return (
     <div className="relative flex items-center justify-center min-h-screen px-4 pt-20 pb-12 bg-subtle-grid overflow-hidden">
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[480px] h-[280px] rounded-full bg-[#8ee3be]/12 blur-[120px] pointer-events-none" />
-
-      <Card className="relative z-10 w-full max-w-md overflow-hidden">
-        <div className="h-1 w-full bg-gradient-to-r from-transparent via-[#8ee3be] to-transparent opacity-80" />
+      <Card className="relative z-10 w-full max-w-md overflow-hidden bg-white border-slate-200 shadow-[0_4px_20px_rgba(15,23,42,0.06)]">
+        <div className="h-1 w-full bg-gradient-to-r from-transparent via-[#18865b] to-transparent opacity-80" />
 
         <CardHeader className="text-center pb-4 pt-7">
-          <div className="mx-auto mb-3 h-11 w-11 rounded-2xl border border-[#8ee3be]/35 bg-[#8ee3be]/15 flex items-center justify-center shadow-[0_0_24px_rgba(142,227,190,0.25)]">
-            <Leaf className="h-5 w-5 text-[#8ee3be]" />
+          <div className="mx-auto mb-3 h-11 w-11 rounded-2xl border border-[#b6e2cf] bg-[#e6f4ee] flex items-center justify-center shadow-sm">
+            <Leaf className="h-5 w-5 text-[#18865b]" />
           </div>
-          <CardTitle className="text-2xl sm:text-3xl font-bold text-white">
+          <CardTitle className="text-2xl sm:text-3xl font-bold text-slate-900">
             {isSignUp ? 'Create Your Account' : 'Welcome Back'}
           </CardTitle>
-          <CardDescription className="pt-1">
+          <CardDescription className="pt-1 text-slate-500">
             {isSignUp
               ? 'Register for Personal Hub (requires administrator approval)'
               : 'Sign in to access your tasks and calendar workspace'}
@@ -110,7 +108,7 @@ export default function LoginPageClient({ nextPath }: { nextPath: string }) {
         </CardHeader>
 
         <CardContent className="space-y-5">
-          <div className="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-white/[0.04] border border-emerald-200/10">
+          <div className="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-slate-100 border border-slate-200">
             <button
               type="button"
               onClick={() => {
@@ -119,8 +117,8 @@ export default function LoginPageClient({ nextPath }: { nextPath: string }) {
               }}
               className={`py-2 text-xs font-semibold rounded-lg transition-all ${
                 !isSignUp
-                  ? 'bg-[#8ee3be] text-[#062016] shadow-sm'
-                  : 'text-emerald-100/65 hover:text-white'
+                  ? 'bg-[#18865b] text-white shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               Sign In
@@ -133,8 +131,8 @@ export default function LoginPageClient({ nextPath }: { nextPath: string }) {
               }}
               className={`py-2 text-xs font-semibold rounded-lg transition-all ${
                 isSignUp
-                  ? 'bg-[#8ee3be] text-[#062016] shadow-sm'
-                  : 'text-emerald-100/65 hover:text-white'
+                  ? 'bg-[#18865b] text-white shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               Create Account
@@ -145,7 +143,7 @@ export default function LoginPageClient({ nextPath }: { nextPath: string }) {
             type="button"
             variant="outline"
             onClick={handleGoogleLogin}
-            className="w-full h-11"
+            className="w-full h-11 border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24">
               <path
@@ -169,17 +167,17 @@ export default function LoginPageClient({ nextPath }: { nextPath: string }) {
           </Button>
 
           <div className="flex items-center gap-3">
-            <div className="flex-1 h-px bg-emerald-200/10" />
-            <span className="text-emerald-100/40 text-[11px] uppercase tracking-widest">
+            <div className="flex-1 h-px bg-slate-200" />
+            <span className="text-slate-400 text-[11px] uppercase tracking-widest">
               or email
             </span>
-            <div className="flex-1 h-px bg-emerald-200/10" />
+            <div className="flex-1 h-px bg-slate-200" />
           </div>
 
           <form onSubmit={handleEmailAuth} className="space-y-4">
             <div className="space-y-1.5">
-              <Label htmlFor="email" className="flex items-center gap-1.5 text-emerald-50/90">
-                <Mail className="h-3.5 w-3.5 text-[#8ee3be]" />
+              <Label htmlFor="email" className="flex items-center gap-1.5 text-slate-700">
+                <Mail className="h-3.5 w-3.5 text-[#18865b]" />
                 Email Address
               </Label>
               <Input
@@ -189,11 +187,12 @@ export default function LoginPageClient({ nextPath }: { nextPath: string }) {
                 onChange={(event) => setEmail(event.target.value)}
                 required
                 placeholder="you@example.com"
+                className="bg-white border-slate-200 text-slate-800"
               />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="password" className="flex items-center gap-1.5 text-emerald-50/90">
-                <KeyRound className="h-3.5 w-3.5 text-[#8ee3be]" />
+              <Label htmlFor="password" className="flex items-center gap-1.5 text-slate-700">
+                <KeyRound className="h-3.5 w-3.5 text-[#18865b]" />
                 Password
               </Label>
               <Input
@@ -204,9 +203,14 @@ export default function LoginPageClient({ nextPath }: { nextPath: string }) {
                 required
                 minLength={6}
                 placeholder="At least 6 characters"
+                className="bg-white border-slate-200 text-slate-800"
               />
             </div>
-            <Button type="submit" disabled={loading} className="w-full h-11">
+            <Button
+              type="submit"
+              disabled={loading}
+              className="w-full h-11 bg-[#18865b] hover:bg-[#136c49] text-white shadow-sm"
+            >
               {loading ? 'Processing…' : isSignUp ? 'Create Account' : 'Sign In to Workspace'}
             </Button>
           </form>
@@ -215,8 +219,8 @@ export default function LoginPageClient({ nextPath }: { nextPath: string }) {
             <div
               className={`p-3.5 rounded-xl text-xs leading-relaxed text-center ${
                 messageTone === 'success'
-                  ? 'bg-[#8ee3be]/12 text-[#bbf7d0] border border-[#8ee3be]/30'
-                  : 'bg-rose-500/12 text-rose-200 border border-rose-400/30'
+                  ? 'bg-[#e6f4ee] text-[#126b48] border border-[#b6e2cf]'
+                  : 'bg-rose-50 text-rose-600 border border-rose-200'
               }`}
             >
               {message}
@@ -224,8 +228,8 @@ export default function LoginPageClient({ nextPath }: { nextPath: string }) {
           )}
 
           <div className="pt-2 flex items-center justify-center">
-            <Badge variant="outline" className="text-[11px] font-normal py-1 px-3">
-              <ShieldCheck className="h-3.5 w-3.5 text-[#8ee3be]" />
+            <Badge variant="outline" className="text-[11px] font-normal py-1 px-3 border-slate-200 text-slate-600">
+              <ShieldCheck className="h-3.5 w-3.5 text-[#18865b]" />
               Protected by Supabase Auth &amp; Admin RBAC
             </Badge>
           </div>

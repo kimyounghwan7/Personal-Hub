@@ -4,26 +4,26 @@
 
 @layer base {
   :root {
-    --background: 158 28% 4%;
-    --foreground: 150 25% 96%;
-    --card: 158 24% 7%;
-    --card-foreground: 150 25% 96%;
-    --popover: 158 24% 7%;
-    --popover-foreground: 150 25% 96%;
-    --primary: 154 60% 74%;
-    --primary-foreground: 158 55% 8%;
-    --secondary: 158 18% 13%;
-    --secondary-foreground: 152 45% 88%;
-    --muted: 158 16% 12%;
-    --muted-foreground: 155 12% 62%;
-    --accent: 156 22% 15%;
-    --accent-foreground: 152 55% 88%;
-    --destructive: 0 72% 55%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 156 18% 16%;
-    --input: 156 18% 16%;
-    --ring: 154 60% 74%;
-    --radius: 0.875rem;
+    --background: 210 20% 97%; /* #f4f6f8 */
+    --foreground: 215 25% 13%; /* #191f28 */
+    --card: 0 0% 100%; /* #ffffff */
+    --card-foreground: 215 25% 13%; /* #191f28 */
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 25% 13%;
+    --primary: 156 70% 31%; /* #18865b */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 152 46% 93%; /* #e6f4ee */
+    --secondary-foreground: 158 71% 25%; /* #126b48 */
+    --muted: 210 20% 96%;
+    --muted-foreground: 215 14% 36%; /* #4e5968 */
+    --accent: 152 46% 93%;
+    --accent-foreground: 158 71% 25%;
+    --destructive: 358 75% 59%; /* #e5484d */
+    --destructive-foreground: 0 0% 100%;
+    --border: 214 13% 91%; /* #e5e8eb */
+    --input: 214 13% 91%;
+    --ring: 156 70% 31%;
+    --radius: 0.75rem;
   }
 }
 
@@ -33,20 +33,15 @@
   }
 
   body {
-    @apply bg-[#070c0a] text-foreground antialiased selection:bg-[#8ee3be]/25 selection:text-[#bbf7d0];
-    background-image:
-      radial-gradient(circle at 15% 0%, rgba(142, 227, 190, 0.11), transparent 40%),
-      radial-gradient(circle at 85% 10%, rgba(94, 234, 212, 0.07), transparent 35%),
-      radial-gradient(circle at 50% 100%, rgba(142, 227, 190, 0.06), transparent 45%);
-    background-attachment: fixed;
+    @apply bg-[#f4f6f8] text-[#191f28] antialiased selection:bg-[#b6e2cf] selection:text-[#126b48];
   }
 }
 
 @layer utilities {
   .bg-subtle-grid {
-    background-size: 40px 40px;
+    background-size: 32px 32px;
     background-image:
-      linear-gradient(to right, rgba(167, 243, 208, 0.035) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(167, 243, 208, 0.035) 1px, transparent 1px);
+      linear-gradient(to right, rgba(148, 163, 184, 0.08) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(148, 163, 184, 0.08) 1px, transparent 1px);
   }
 }

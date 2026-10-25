@@ -44,12 +44,12 @@ export default function CalendarView({ todos }: CalendarViewProps) {
   };
 
   return (
-    <Card>
+    <Card className="bg-white border-slate-200 shadow-[0_2px_10px_rgba(15,23,42,0.04)]">
       <CardHeader className="pb-4">
-        <CardTitle className="text-2xl text-transparent bg-clip-text bg-gradient-to-r from-[#d8f9e9] via-[#8ee3be] to-[#6ee7b7]">
+        <CardTitle className="text-2xl font-bold text-slate-900">
           Monthly Schedule
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="text-slate-500">
           Highlighted dots indicate scheduled tasks.
         </CardDescription>
       </CardHeader>
@@ -58,7 +58,7 @@ export default function CalendarView({ todos }: CalendarViewProps) {
           {isMounted ? (
             <Calendar tileContent={tileContent} className="w-full border-none" locale="ko" />
           ) : (
-            <div className="flex items-center justify-center h-full text-emerald-100/50">
+            <div className="flex items-center justify-center h-full text-slate-400">
               Loading Calendar…
             </div>
           )}

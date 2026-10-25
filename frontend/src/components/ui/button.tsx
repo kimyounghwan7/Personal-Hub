@@ -4,24 +4,24 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8ee3be]/50 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.99]',
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-semibold transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#18865b]/30 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.99]',
   {
     variants: {
       variant: {
         default:
-          'bg-gradient-to-r from-[#8ee3be] via-[#9be7c6] to-[#7ddbc5] text-[#062016] shadow-[0_0_24px_rgba(142,227,190,0.28)] hover:brightness-105 hover:shadow-[0_0_32px_rgba(142,227,190,0.42)]',
+          'bg-[#18865b] text-white shadow-sm hover:bg-[#136c49]',
         destructive:
-          'bg-rose-500/15 text-rose-300 border border-rose-400/25 hover:bg-rose-500/25 hover:border-rose-400/40',
+          'bg-rose-50 text-rose-600 border border-rose-200 hover:bg-rose-100',
         outline:
-          'border border-emerald-200/15 bg-emerald-950/20 text-emerald-50 hover:bg-[#8ee3be]/10 hover:border-[#8ee3be]/35 hover:text-[#bbf7d0] backdrop-blur-md',
+          'border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:text-slate-900 shadow-sm',
         secondary:
-          'border border-[#8ee3be]/25 bg-[#8ee3be]/12 text-[#a7f3d0] hover:bg-[#8ee3be]/20',
+          'border border-[#b6e2cf] bg-[#e6f4ee] text-[#126b48] hover:bg-[#d6ede3]',
         ghost:
-          'text-emerald-100/75 hover:bg-[#8ee3be]/10 hover:text-[#bbf7d0]',
+          'text-slate-600 hover:bg-slate-100 hover:text-slate-900',
         link:
-          'text-[#8ee3be] underline-offset-4 hover:underline hover:text-[#bbf7d0]',
+          'text-[#18865b] underline-offset-4 hover:underline hover:text-[#136c49]',
         success:
-          'bg-[#8ee3be]/15 text-[#a7f3d0] border border-[#8ee3be]/35 hover:bg-[#8ee3be]/25',
+          'border border-[#b6e2cf] bg-[#e6f4ee] text-[#126b48] hover:bg-[#d6ede3]',
       },
       size: {
         default: 'h-10 px-5 py-2.5',

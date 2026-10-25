@@ -231,8 +231,8 @@ export default function TodosPageClient() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen px-4 bg-subtle-grid">
-        <Badge variant="outline" className="py-2 px-4 text-sm">
-          <span className="h-2 w-2 rounded-full bg-[#8ee3be] animate-pulse" />
+        <Badge variant="outline" className="py-2 px-4 text-sm bg-white shadow-sm">
+          <span className="h-2 w-2 rounded-full bg-[#18865b] animate-pulse" />
           Loading your workspace…
         </Badge>
       </div>
@@ -242,11 +242,11 @@ export default function TodosPageClient() {
   if (authState === 'error') {
     return (
       <div className="flex items-center justify-center min-h-screen px-4 bg-subtle-grid">
-        <Card className="text-center max-w-md w-full p-4">
+        <Card className="text-center max-w-md w-full p-4 bg-white border-slate-200 shadow-sm">
           <CardHeader className="items-center">
-            <AlertTriangle className="h-12 w-12 text-amber-300 mb-2" />
-            <CardTitle>{errorState.title}</CardTitle>
-            <CardDescription className="pt-2">{errorState.description}</CardDescription>
+            <AlertTriangle className="h-12 w-12 text-amber-500 mb-2" />
+            <CardTitle className="text-slate-900">{errorState.title}</CardTitle>
+            <CardDescription className="pt-2 text-slate-600">{errorState.description}</CardDescription>
           </CardHeader>
           <CardContent>
             <Button
@@ -254,7 +254,7 @@ export default function TodosPageClient() {
                 void loadTodos();
               }}
               size="lg"
-              className="w-full"
+              className="w-full bg-[#18865b] hover:bg-[#136c49] text-white"
             >
               Retry Connection
             </Button>
@@ -267,17 +267,17 @@ export default function TodosPageClient() {
   if (authState === 'pending_approval') {
     return (
       <div className="flex items-center justify-center min-h-screen px-4 bg-subtle-grid">
-        <Card className="text-center max-w-md w-full p-4">
+        <Card className="text-center max-w-md w-full p-4 bg-white border-slate-200 shadow-sm">
           <CardHeader className="items-center">
-            <Clock className="h-12 w-12 text-amber-300 mb-2" />
-            <CardTitle>Approval Pending</CardTitle>
-            <CardDescription className="pt-2">
+            <Clock className="h-12 w-12 text-amber-500 mb-2" />
+            <CardTitle className="text-slate-900">Approval Pending</CardTitle>
+            <CardDescription className="pt-2 text-slate-600">
               Your account is registered, but an administrator still needs to approve it before you can access the workspace.
             </CardDescription>
           </CardHeader>
           <CardContent className="flex justify-center">
             <Badge variant="warning" className="py-2 px-4 text-sm">
-              <span className="w-2 h-2 rounded-full bg-amber-300 animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
               Waiting for admin approval…
             </Badge>
           </CardContent>
@@ -323,69 +323,69 @@ export default function TodosPageClient() {
     <div className="min-h-screen bg-subtle-grid pt-24 pb-16 px-4">
       <div className="max-w-7xl mx-auto space-y-5">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-          <Card className="p-4 flex items-center justify-between">
+          <Card className="p-4 flex items-center justify-between bg-white border-slate-200 shadow-[0_2px_10px_rgba(15,23,42,0.04)]">
             <div>
-              <div className="text-xs font-medium text-emerald-100/60">Total Tasks</div>
-              <div className="text-2xl font-bold text-white mt-0.5 tabular-nums">
+              <div className="text-xs font-medium text-slate-500">Total Tasks</div>
+              <div className="text-2xl font-bold text-slate-900 mt-0.5 tabular-nums">
                 {activeDataset.length}
               </div>
             </div>
-            <div className="h-10 w-10 rounded-xl bg-[#8ee3be]/12 border border-[#8ee3be]/30 flex items-center justify-center text-[#8ee3be]">
+            <div className="h-10 w-10 rounded-xl bg-[#e6f4ee] border border-[#b6e2cf] flex items-center justify-center text-[#18865b]">
               <ListTodo className="h-5 w-5" />
             </div>
           </Card>
 
-          <Card className="p-4 flex items-center justify-between">
+          <Card className="p-4 flex items-center justify-between bg-white border-slate-200 shadow-[0_2px_10px_rgba(15,23,42,0.04)]">
             <div>
-              <div className="text-xs font-medium text-emerald-100/60">In Progress</div>
-              <div className="text-2xl font-bold text-[#a7f3d0] mt-0.5 tabular-nums">
+              <div className="text-xs font-medium text-slate-500">In Progress</div>
+              <div className="text-2xl font-bold text-sky-700 mt-0.5 tabular-nums">
                 {pendingCount}
               </div>
             </div>
-            <div className="h-10 w-10 rounded-xl bg-teal-300/12 border border-teal-300/30 flex items-center justify-center text-teal-200">
+            <div className="h-10 w-10 rounded-xl bg-sky-50 border border-sky-200 flex items-center justify-center text-sky-600">
               <CalendarDays className="h-5 w-5" />
             </div>
           </Card>
 
-          <Card className="p-4 flex items-center justify-between">
+          <Card className="p-4 flex items-center justify-between bg-white border-slate-200 shadow-[0_2px_10px_rgba(15,23,42,0.04)]">
             <div>
-              <div className="text-xs font-medium text-emerald-100/60">Overdue (기한 지남)</div>
-              <div className="text-2xl font-bold text-rose-300 mt-0.5 tabular-nums">
+              <div className="text-xs font-medium text-slate-500">Overdue (기한 지남)</div>
+              <div className="text-2xl font-bold text-rose-600 mt-0.5 tabular-nums">
                 {overdueCount}
               </div>
             </div>
-            <div className="h-10 w-10 rounded-xl bg-rose-500/12 border border-rose-400/30 flex items-center justify-center text-rose-300">
+            <div className="h-10 w-10 rounded-xl bg-rose-50 border border-rose-200 flex items-center justify-center text-rose-600">
               <AlertTriangle className="h-5 w-5" />
             </div>
           </Card>
 
-          <Card className="p-4 flex flex-col justify-between">
+          <Card className="p-4 flex flex-col justify-between bg-white border-slate-200 shadow-[0_2px_10px_rgba(15,23,42,0.04)]">
             <div className="flex items-center justify-between">
-              <div className="text-xs font-medium text-emerald-100/60">Completion Rate</div>
-              <span className="text-sm font-bold text-[#8ee3be] tabular-nums">
+              <div className="text-xs font-medium text-slate-500">Completion Rate</div>
+              <span className="text-sm font-bold text-[#18865b] tabular-nums">
                 {progressPercent}%
               </span>
             </div>
-            <div className="w-full h-2 rounded-full bg-white/[0.06] overflow-hidden mt-3">
+            <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden mt-3">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-[#8ee3be] to-[#6ee7b7] transition-all duration-500"
+                className="h-full rounded-full bg-[#18865b] transition-all duration-500"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
           </Card>
         </div>
 
-        <Card className="p-4">
+        <Card className="p-4 bg-white border-slate-200 shadow-[0_2px_10px_rgba(15,23,42,0.04)]">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
             <div className="flex flex-wrap items-center gap-2">
-              <div className="inline-flex items-center rounded-xl border border-emerald-200/12 bg-white/[0.03] p-1">
+              <div className="inline-flex items-center rounded-xl border border-slate-200 bg-slate-100 p-1">
                 <button
                   type="button"
                   onClick={() => setWorkspaceView('calendar')}
                   className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                     workspaceView === 'calendar'
-                      ? 'bg-[#8ee3be] text-[#062016]'
-                      : 'text-emerald-100/70 hover:text-white'
+                      ? 'bg-[#18865b] text-white shadow-sm'
+                      : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
                   <CalendarIcon className="h-3.5 w-3.5" />
@@ -396,8 +396,8 @@ export default function TodosPageClient() {
                   onClick={() => setWorkspaceView('list')}
                   className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                     workspaceView === 'list'
-                      ? 'bg-[#8ee3be] text-[#062016]'
-                      : 'text-emerald-100/70 hover:text-white'
+                      ? 'bg-[#18865b] text-white shadow-sm'
+                      : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
                   <LayoutList className="h-3.5 w-3.5" />
@@ -405,7 +405,7 @@ export default function TodosPageClient() {
                 </button>
               </div>
 
-              <div className="flex items-center gap-1 p-1 rounded-xl bg-white/[0.03] border border-emerald-200/10">
+              <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-50 border border-slate-200">
                 {(['all', 'pending', 'completed', 'overdue'] as const).map((mode) => (
                   <button
                     key={mode}
@@ -413,8 +413,8 @@ export default function TodosPageClient() {
                     onClick={() => setFilterMode(mode)}
                     className={`px-2.5 py-1 rounded-lg text-xs font-semibold capitalize transition-all ${
                       filterMode === mode
-                        ? 'bg-[#8ee3be]/20 text-[#8ee3be] border border-[#8ee3be]/40'
-                        : 'text-emerald-100/60 hover:text-white'
+                        ? 'bg-[#e6f4ee] text-[#126b48] border border-[#b6e2cf]'
+                        : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
                     {mode}
@@ -428,8 +428,8 @@ export default function TodosPageClient() {
                   onClick={() => setUseSamplePreview((prev) => !prev)}
                   className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-medium transition-all ${
                     useSamplePreview
-                      ? 'border-[#8ee3be]/50 bg-[#8ee3be]/15 text-[#8ee3be]'
-                      : 'border-emerald-200/15 bg-white/[0.03] text-emerald-100/70 hover:text-white'
+                      ? 'border-[#b6e2cf] bg-[#e6f4ee] text-[#126b48]'
+                      : 'border-slate-200 bg-white text-slate-600 hover:text-slate-900'
                   }`}
                 >
                   <Sparkles className="h-3.5 w-3.5" />
@@ -439,20 +439,20 @@ export default function TodosPageClient() {
             </div>
 
             <div className="relative w-full lg:w-64">
-              <Search className="h-3.5 w-3.5 text-emerald-200/45 absolute left-3 top-1/2 -translate-y-1/2" />
+              <Search className="h-3.5 w-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <Input
                 type="search"
                 value={searchQuery}
                 onChange={(event) => setSearchQuery(event.target.value)}
                 placeholder="할 일 검색…"
-                className="h-9 pl-8 text-xs"
+                className="h-9 pl-8 text-xs bg-slate-50 border-slate-200 text-slate-800 placeholder:text-slate-400 focus:bg-white"
               />
             </div>
           </div>
 
           <form
             onSubmit={handleAddTodo}
-            className="mt-3.5 pt-3.5 border-t border-emerald-200/10 flex flex-col sm:flex-row gap-2.5"
+            className="mt-3.5 pt-3.5 border-t border-slate-200 flex flex-col sm:flex-row gap-2.5"
           >
             <Input
               type="text"
@@ -460,13 +460,13 @@ export default function TodosPageClient() {
               onChange={(event) => setNewTodoTitle(event.target.value)}
               maxLength={200}
               placeholder="Add a new task (max 200 chars)…"
-              className="flex-1 h-10"
+              className="flex-1 h-10 border-slate-200 text-slate-800"
             />
             <Input
               type="date"
               value={newTodoStartDate}
               onChange={(event) => setNewTodoStartDate(event.target.value)}
-              className="w-full sm:w-36 h-10 text-xs font-mono"
+              className="w-full sm:w-36 h-10 text-xs font-mono border-slate-200 text-slate-800"
               aria-label="Start date (optional)"
               title="시작일 (선택 — 기간 막대용)"
             />
@@ -474,7 +474,7 @@ export default function TodosPageClient() {
               type="date"
               value={newTodoDueDate}
               onChange={(event) => setNewTodoDueDate(event.target.value)}
-              className="w-full sm:w-36 h-10 text-xs font-mono"
+              className="w-full sm:w-36 h-10 text-xs font-mono border-slate-200 text-slate-800"
               aria-label="Due date"
               title="마감일"
             />
@@ -482,41 +482,25 @@ export default function TodosPageClient() {
               value={newTodoCategory}
               onChange={(event) => setNewTodoCategory(event.target.value as TodoCategoryTag)}
               aria-label="Category"
-              className="h-10 rounded-xl border border-emerald-200/15 bg-white/[0.04] px-3 text-xs text-emerald-50 focus:outline-none focus:ring-2 focus:ring-[#8ee3be]"
+              className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#18865b]"
             >
-              <option value="Work" className="bg-[#0d1512]">
-                Work
-              </option>
-              <option value="Infra" className="bg-[#0d1512]">
-                Infra
-              </option>
-              <option value="Personal" className="bg-[#0d1512]">
-                Personal
-              </option>
-              <option value="Study" className="bg-[#0d1512]">
-                Study
-              </option>
+              <option value="Work">Work</option>
+              <option value="Infra">Infra</option>
+              <option value="Personal">Personal</option>
+              <option value="Study">Study</option>
             </select>
             <select
               value={newTodoPriority}
               onChange={(event) => setNewTodoPriority(Number(event.target.value))}
               aria-label="Priority"
-              className="h-10 rounded-xl border border-emerald-200/15 bg-white/[0.04] px-3 text-xs text-emerald-50 focus:outline-none focus:ring-2 focus:ring-[#8ee3be]"
+              className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#18865b]"
             >
-              <option value={1} className="bg-[#0d1512]">
-                P1 긴급
-              </option>
-              <option value={2} className="bg-[#0d1512]">
-                P2 높음
-              </option>
-              <option value={3} className="bg-[#0d1512]">
-                P3 보통
-              </option>
-              <option value={4} className="bg-[#0d1512]">
-                P4 낮음
-              </option>
+              <option value={1}>P1 긴급</option>
+              <option value={2}>P2 높음</option>
+              <option value={3}>P3 보통</option>
+              <option value={4}>P4 낮음</option>
             </select>
-            <Button type="submit" className="h-10 px-5 shrink-0">
+            <Button type="submit" className="h-10 px-5 shrink-0 bg-[#18865b] hover:bg-[#136c49] text-white">
               <Plus className="h-4 w-4" />
               Add Task
             </Button>
@@ -574,14 +558,14 @@ export default function TodosPageClient() {
             />
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-              <Card className="lg:col-span-8 xl:col-span-9">
+              <Card className="lg:col-span-8 xl:col-span-9 bg-white border-slate-200 shadow-[0_2px_10px_rgba(15,23,42,0.04)]">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
                     <div>
-                      <CardTitle className="text-xl text-transparent bg-clip-text bg-gradient-to-r from-[#d8f9e9] via-[#8ee3be] to-[#6ee7b7]">
+                      <CardTitle className="text-xl font-bold text-slate-900">
                         Task Workspace
                       </CardTitle>
-                      <CardDescription className="mt-1">
+                      <CardDescription className="mt-1 text-slate-500">
                         Organize daily priorities and track deadlines alongside your calendar.
                       </CardDescription>
                     </div>
@@ -593,9 +577,9 @@ export default function TodosPageClient() {
 
                 <CardContent>
                   {listFilteredByStripDate.length === 0 ? (
-                    <div className="rounded-2xl border border-dashed border-emerald-200/15 bg-white/[0.02] py-12 px-4 text-center">
-                      <CheckCircle2 className="h-8 w-8 text-[#8ee3be]/60 mx-auto mb-2.5" />
-                      <p className="text-sm text-emerald-100/60">
+                    <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/50 py-12 px-4 text-center">
+                      <CheckCircle2 className="h-8 w-8 text-slate-400 mx-auto mb-2.5" />
+                      <p className="text-sm text-slate-500">
                         {activeDataset.length === 0
                           ? 'No tasks yet. Create your first task above!'
                           : `No ${filterMode} tasks found.`}
@@ -611,7 +595,7 @@ export default function TodosPageClient() {
                           <li
                             key={todo.id}
                             onClick={() => setSelectedTodo(todo)}
-                            className="flex items-center justify-between p-4 bg-white/[0.03] rounded-xl border border-emerald-200/10 hover:border-[#8ee3be]/35 hover:bg-white/[0.05] transition-all group cursor-pointer"
+                            className="flex items-center justify-between p-4 bg-white rounded-xl border border-slate-200 hover:border-slate-300 hover:shadow-sm transition-all group cursor-pointer"
                           >
                             <div
                               className="flex items-center gap-3.5 min-w-0"
@@ -629,8 +613,8 @@ export default function TodosPageClient() {
                               <span
                                 className={
                                   todo.status === 'completed'
-                                    ? 'line-through text-emerald-100/40 truncate'
-                                    : 'text-emerald-50 font-medium truncate'
+                                    ? 'line-through text-slate-400 truncate'
+                                    : 'text-slate-800 font-medium truncate'
                                 }
                               >
                                 {todo.title}
