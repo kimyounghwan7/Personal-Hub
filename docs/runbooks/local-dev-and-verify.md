@@ -34,12 +34,24 @@ cd backend && ENVIRONMENT=local PYTHONPATH=. uv run --no-project --python 3.11 -
 cd frontend && npm run lint
 ```
 
-## 3. DB 마이그레이션 및 서버 실행 (사용자 허락 필요)
+## 3. Docker 멀티스테이지 구조 및 서버 실행 (사용자 허락 필요)
+
+`backend/Dockerfile` 과 `frontend/Dockerfile` 은 모두 **멀티스테이지 빌드(`dev` / `prod`)** 로 구성되어 있다.
+
+- **개발용(`target: dev`)**: 소스 볼륨 마운트 및 핫 리로드(`uvicorn --reload`, `npm run dev`)로 동작한다. 컨테이너 내부 SSR 요청은 `INTERNAL_API_URL=http://backend:8000` 으로 통신하고, 브라우저 요청은 `NEXT_PUBLIC_API_URL=http://localhost:8000` 으로 통신한다.
+- **배포용(`target: prod`, 기본 타겟)**: 비루트 계정(`appuser`, `nextjs`)과 Next.js `output: "standalone"` 경량 서버로 동작하며, 클라우드 컨테이너 플랫폼(Render 등)의 `$PORT` 환경변수를 지원한다.
 
 ```bash
-# Alembic 마이그레이션 반영
-cd backend && alembic upgrade head
+# 1. 개발용 Docker Compose 백그라운드 빌드 및 실행 (personal-hub-backend-dev :8000, personal-hub-frontend-dev :3000)
+docker compose up --build -d
 
-# 전체 스택 Docker Compose 실행
-docker compose up --build
+# 2. 컨테이너 상태 및 로그 확인
+docker compose ps
+docker compose logs -f
+
+# 3. 컨테이너 내부에서 Alembic 마이그레이션 실행
+docker compose exec backend alembic upgrade head
+
+# 4. 배포용 프로덕션 컨테이너 이미지 로컬 검증 (docker-compose.prod.yml)
+docker compose -f docker-compose.prod.yml build
 ```
