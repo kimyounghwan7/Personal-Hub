@@ -10,6 +10,7 @@
 
 | 날짜 | 문서 | 한 줄 | 상태 |
 |---|---|---|---|
+| 2026-10-25 | [pastel-green-5-tones-research](2026-10-25_pastel-green-5-tones-research.md) | 기존 다크 네온 민트 톤의 문제 원인 진단 및 파스텔 그린 웹 UI 톤앤매너 5선(Sage · Matcha · Celadon · Eucalyptus · Neutral Dark Sage) HEX 팔레트 비교 | 현행 |
 | 2026-10-25 | [draft-to-kb-and-rules-promotion](2026-10-25_draft-to-kb-and-rules-promotion.md) | To-Do + 캘린더 워크스페이스 초안(HTML 목업·백엔드/DB·프론트엔드 컴포넌트 이식) 및 초안→지식베이스(KB)·룰 승격 체계(ADR · `model-hub` · `Personal Hub`) 비교 분석 | 현행 |
 | 2026-10-25 | [domain-market-research](2026-10-25_domain-market-research.md) | 도메인 확장자(`.com` · `.dev` · `.kr`) 및 등록 대행사(Cloudflare · Porkbun · 호스팅케이알 · 가비아) 실측 가격 · 연장 요금 함정 · 보안 비교 | 현행 |
 | 2026-10-25 | [workflow-migration-from-sludemo](2026-10-25_workflow-migration-from-sludemo.md) | `SLUDemo` 프로젝트의 에이전트 거버넌스 분석 및 웹·배포 프로젝트 맞춤형 마이그레이션 내역 (가져온 것 vs 제외한 것 비교) | 현행 |

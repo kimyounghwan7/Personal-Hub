@@ -46,8 +46,9 @@ flowchart LR
 3. 확인 후 [과금 폭탄 방지 배포 런북](runbooks/cost-safe-deployment.md)에 따라 Render(백엔드, 결정 ARCH-3) + Vercel Hobby(프론트엔드) 배포 및 도메인 연결로 넘어간다.
 
 **지금 정해야 할 것 (사용자 확인 사항)**:
-1. **단독 HTML 디자인 목업 및 워크스페이스 확인**: `html-mockup-writer`(Flash 3.8) 에이전트가 생성한 `drafts/mockups/personal-hub-standalone-mock.html` 화면 구성에서 추가로 다듬고 싶은 UI/기능이 있으신가요?
-2. **Supabase DB 재개 및 배포 진입 시점**: Supabase 대시보드에서 프로젝트를 Restore 하신 뒤 `alembic upgrade head` 실행과 Render · Vercel 실제 배포 단계로 바로 넘어갈지 알려주시면 됩니다.
+1. **파스텔 그린 5가지 디자인 톤앤매너 중 최종 선택**:
+   - 비교 보고서([2026-10-25_pastel-green-5-tones-research.md](reports/2026-10-25_pastel-green-5-tones-research.md))와 단독 HTML 실시간 스위처 목업(`drafts/mockups/pastel-green-5-tones-comparison.html`)에서 **Tone 1 ~ Tone 5** 중 마음에 드는 톤앤매너 번호(또는 라이트/다크 짝 조합)를 골라주시면 `frontend-dev`(Gemini 3.8 Flash) 에이전트를 통해 실제 프론트엔드 전체 화면에 즉시 반영하겠습니다.
+2. **Supabase DB 재개 및 배포 진입 시점**: 색상 톤 확정 후 Supabase 프로젝트를 Restore 하여 `alembic upgrade head` 적용 및 Render · Vercel 실제 배포 단계로 넘어갈지 알려주시면 됩니다.
 
 ## 3. 열린 문제 (해결 현황)
 
@@ -63,6 +64,7 @@ flowchart LR
 
 | 날짜 | 한 일 | 문서 |
 |---|---|---|
+| 2026-10-25 | 기존 다크 네온 민트 톤 원인 진단 및 파스텔 그린 웹 UI 톤앤매너 5선 조사 보고서 작성 · `html-mockup-writer`(Flash 3.8)로 5개 테마 실시간 전환 단독 HTML 비교 목업(`drafts/mockups/pastel-green-5-tones-comparison.html`) 생성 | [파스텔 그린 5선 비교 보고서](reports/2026-10-25_pastel-green-5-tones-research.md) |
 | 2026-10-25 | 백엔드(`backend-dev`: Gemini 4 Argon) · 프론트엔드(`frontend-dev`: Gemini 3.8 Flash) · HTML 목업(`html-mockup-writer`: Gemini 3.8 Flash) 에이전트 분리(WF-9) · 백엔드 스키마/쿼리 분리(`ARCH-5`) 및 아키텍처 하니스(`test_architecture_harness.py`, `pytest` 36개 통과) 정본 승격 완료 | [decisions (WF-9, ARCH-5)](decisions.md) · [승격 비교 보고서](reports/2026-10-25_draft-to-kb-and-rules-promotion.md) |
 | 2026-10-25 | 파스텔 민트(`#8ee3be`) 테마 적용 · `model-hub` 참조 To-Do/캘린더 HTML 목업 및 백엔드/DB/프론트엔드 설계 초안(`drafts/`) 작성 · 프론트엔드 캘린더/백로그/미니스트립 컴포넌트(`frontend/src/components/todos/*`) 실제 이식 · 초안→KB/룰 승격 체계 비교 분석 보고서 작성 | [승격 비교 보고서](reports/2026-10-25_draft-to-kb-and-rules-promotion.md) |
 | 2026-10-25 | 3단계 완료 — `shadcn/ui` 7종 컴포넌트(`Button`, `Input`, `Card`, `Badge`, `Table`, `Checkbox`, `Label`) 도입 및 전체 화면 리팩토링, `npm run lint` · `tsc` · `next build` 통과 | [decisions (ARCH-4)](decisions.md) |
