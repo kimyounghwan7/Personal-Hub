@@ -1,22 +1,28 @@
-from pydantic import BaseModel
-from typing import Optional
-from datetime import date
+from datetime import datetime
+from typing import Literal, Optional
+from pydantic import BaseModel, Field
+
+TodoStatus = Literal["pending", "completed"]
+
 
 class TodoBase(BaseModel):
-    title: str
-    description: Optional[str] = None
-    due_date: Optional[date] = None
-    priority: Optional[int] = 1
+    title: str = Field(min_length=1, max_length=200)
+    description: Optional[str] = Field(default=None, max_length=2000)
+    due_date: Optional[datetime] = None
+    priority: Optional[int] = Field(default=1, ge=1, le=5)
+
 
 class TodoCreate(TodoBase):
     pass
 
+
 class TodoUpdate(BaseModel):
-    title: Optional[str] = None
-    description: Optional[str] = None
-    status: Optional[str] = None
-    due_date: Optional[date] = None
-    priority: Optional[int] = None
+    title: Optional[str] = Field(default=None, min_length=1, max_length=200)
+    description: Optional[str] = Field(default=None, max_length=2000)
+    status: Optional[TodoStatus] = None
+    due_date: Optional[datetime] = None
+    priority: Optional[int] = Field(default=None, ge=1, le=5)
+
 
 class TodoResponse(TodoBase):
     id: str
@@ -25,3 +31,4 @@ class TodoResponse(TodoBase):
 
     class Config:
         from_attributes = True
+
