@@ -81,13 +81,13 @@ export default function TodosPageClient() {
     void loadTodos();
   }, [loadTodos]);
 
-  const handleAddTodo = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleAddTodo = async (event: React.FormEvent) => {
+    event.preventDefault();
     if (!newTodo.trim()) return;
 
     try {
       const response = await api.post<Todo>('/todos/', {
-        title: newTodo,
+        title: newTodo.trim(),
         due_date: new Date().toISOString(),
       });
 
@@ -97,6 +97,33 @@ export default function TodosPageClient() {
       }
     } catch (error) {
       console.error('Failed to add todo:', error);
+    }
+  };
+
+  const handleToggleTodo = async (todo: Todo) => {
+    const nextStatus = todo.status === 'completed' ? 'pending' : 'completed';
+
+    try {
+      const response = await api.put<Todo>(`/todos/${todo.id}`, {
+        status: nextStatus,
+      });
+
+      if (response.data) {
+        setTodos((currentTodos) =>
+          currentTodos.map((item) => (item.id === todo.id ? response.data : item)),
+        );
+      }
+    } catch (error) {
+      console.error('Failed to update todo status:', error);
+    }
+  };
+
+  const handleDeleteTodo = async (todoId: string) => {
+    try {
+      await api.delete(`/todos/${todoId}`);
+      setTodos((currentTodos) => currentTodos.filter((item) => item.id !== todoId));
+    } catch (error) {
+      console.error('Failed to delete todo:', error);
     }
   };
 
@@ -153,7 +180,8 @@ export default function TodosPageClient() {
           <input
             type="text"
             value={newTodo}
-            onChange={(e) => setNewTodo(e.target.value)}
+            onChange={(event) => setNewTodo(event.target.value)}
+            maxLength={200}
             placeholder="Add a new task..."
             className="flex-1 p-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/30 transition-all"
           />
@@ -175,18 +203,32 @@ export default function TodosPageClient() {
                   <input
                     type="checkbox"
                     checked={todo.status === 'completed'}
-                    readOnly
+                    onChange={() => {
+                      void handleToggleTodo(todo);
+                    }}
                     className="w-5 h-5 cursor-pointer accent-blue-500 rounded"
                   />
                   <span className={todo.status === 'completed' ? 'line-through text-gray-500' : 'text-gray-200'}>
                     {todo.title}
                   </span>
                 </div>
-                {todo.due_date && (
-                  <span className="text-sm text-gray-500 group-hover:text-gray-400 transition-colors">
-                    {new Date(todo.due_date).toLocaleDateString()}
-                  </span>
-                )}
+                <div className="flex items-center gap-3">
+                  {todo.due_date && (
+                    <span className="text-sm text-gray-500 group-hover:text-gray-400 transition-colors">
+                      {new Date(todo.due_date).toLocaleDateString()}
+                    </span>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      void handleDeleteTodo(todo.id);
+                    }}
+                    aria-label={`Delete ${todo.title}`}
+                    className="text-xs px-2.5 py-1 rounded bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20 transition-colors"
+                  >
+                    Delete
+                  </button>
+                </div>
               </li>
             ))}
           </ul>

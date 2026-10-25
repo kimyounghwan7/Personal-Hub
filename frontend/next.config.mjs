@@ -1,4 +1,22 @@
 /** @type {import('next').NextConfig} */
+const configuredApiUrl = process.env.NEXT_PUBLIC_API_URL?.trim();
+let apiOrigin = '';
+if (configuredApiUrl) {
+  try {
+    apiOrigin = new URL(configuredApiUrl).origin;
+  } catch {
+    apiOrigin = '';
+  }
+}
+
+const connectSources = [
+  "'self'",
+  'http://localhost:*',
+  'http://127.0.0.1:*',
+  'https://*.supabase.co',
+  ...(apiOrigin ? [apiOrigin] : []),
+].join(' ');
+
 const nextConfig = {
   distDir: process.env.NODE_ENV === 'development' ? '.next-dev' : '.next',
   async headers() {
@@ -16,7 +34,7 @@ const nextConfig = {
           },
           {
             key: 'X-Frame-Options',
-            value: 'SAMEORIGIN'
+            value: 'DENY'
           },
           {
             key: 'X-Content-Type-Options',
@@ -28,7 +46,7 @@ const nextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' http://localhost:* https://*.supabase.co"
+            value: `default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src ${connectSources}`
           }
         ]
       }
@@ -37,3 +55,4 @@ const nextConfig = {
 };
 
 export default nextConfig;
+

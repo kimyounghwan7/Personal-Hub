@@ -5,8 +5,15 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import './CalendarCustom.css'; // Custom styles for tailwind overriding
 
+type CalendarTodoItem = {
+  id: string;
+  title: string;
+  due_date?: string | null;
+  status?: string;
+};
+
 type CalendarViewProps = {
-  todos: any[];
+  todos: CalendarTodoItem[];
 };
 
 export default function CalendarView({ todos }: CalendarViewProps) {
