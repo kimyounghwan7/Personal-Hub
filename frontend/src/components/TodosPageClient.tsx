@@ -35,7 +35,9 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Chip } from '@/components/ui/chip';
 import { Input } from '@/components/ui/input';
+import { SegmentedToggle } from '@/components/ui/segmented-toggle';
 import api, {
   getApiErrorDetail,
   isNetworkError,
@@ -377,64 +379,77 @@ export default function TodosPageClient() {
 
         <Card className="p-4 bg-white border-slate-200 shadow-[0_2px_10px_rgba(15,23,42,0.04)]">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-            <div className="flex flex-wrap items-center gap-2">
-              <div className="inline-flex items-center rounded-xl border border-slate-200 bg-slate-100 p-1">
-                <button
-                  type="button"
-                  onClick={() => setWorkspaceView('calendar')}
-                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                    workspaceView === 'calendar'
-                      ? 'bg-[#18865b] text-white shadow-sm'
-                      : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                >
-                  <CalendarIcon className="h-3.5 w-3.5" />
-                  ▦ Calendar
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setWorkspaceView('list')}
-                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                    workspaceView === 'list'
-                      ? 'bg-[#18865b] text-white shadow-sm'
-                      : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                >
-                  <LayoutList className="h-3.5 w-3.5" />
-                  ≡ List
-                </button>
-              </div>
+            <div className="flex flex-wrap items-center gap-2.5">
+              <SegmentedToggle<WorkspaceViewMode>
+                value={workspaceView}
+                onChange={setWorkspaceView}
+                size="sm"
+                options={[
+                  {
+                    value: 'calendar',
+                    label: '▦ Calendar',
+                    icon: <CalendarIcon className="h-3.5 w-3.5" />,
+                  },
+                  {
+                    value: 'list',
+                    label: '≡ List',
+                    icon: <LayoutList className="h-3.5 w-3.5" />,
+                  },
+                ]}
+              />
 
-              <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-50 border border-slate-200">
-                {(['all', 'pending', 'completed', 'overdue'] as const).map((mode) => (
-                  <button
-                    key={mode}
-                    type="button"
-                    onClick={() => setFilterMode(mode)}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-semibold capitalize transition-all ${
-                      filterMode === mode
-                        ? 'bg-[#e6f4ee] text-[#126b48] border border-[#b6e2cf]'
-                        : 'text-slate-600 hover:text-slate-900'
-                    }`}
+              <div className="flex flex-wrap items-center gap-1.5">
+                {(
+                  [
+                    {
+                      mode: 'all' as const,
+                      label: '전체',
+                      count: activeDataset.length,
+                      tone: 'neutral' as const,
+                    },
+                    {
+                      mode: 'pending' as const,
+                      label: '진행중',
+                      count: pendingCount,
+                      tone: 'neutral' as const,
+                    },
+                    {
+                      mode: 'completed' as const,
+                      label: '완료',
+                      count: completedCount,
+                      tone: 'neutral' as const,
+                    },
+                    {
+                      mode: 'overdue' as const,
+                      label: '⚠ 지남',
+                      count: overdueCount,
+                      tone: 'danger' as const,
+                    },
+                  ] as const
+                ).map((filterOption) => (
+                  <Chip
+                    key={filterOption.mode}
+                    tone={filterOption.tone}
+                    active={filterMode === filterOption.mode}
+                    onClick={() => setFilterMode(filterOption.mode)}
+                    count={filterOption.count}
+                    size="sm"
                   >
-                    {mode}
-                  </button>
+                    {filterOption.label}
+                  </Chip>
                 ))}
               </div>
 
               {todos.length === 0 && (
-                <button
-                  type="button"
-                  onClick={() => setUseSamplePreview((prev) => !prev)}
-                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-medium transition-all ${
-                    useSamplePreview
-                      ? 'border-[#b6e2cf] bg-[#e6f4ee] text-[#126b48]'
-                      : 'border-slate-200 bg-white text-slate-600 hover:text-slate-900'
-                  }`}
+                <Chip
+                  tone="primary"
+                  active={useSamplePreview}
+                  onClick={() => setUseSamplePreview((previousPreview) => !previousPreview)}
+                  size="sm"
                 >
-                  <Sparkles className="h-3.5 w-3.5" />
-                  {useSamplePreview ? '샘플 일정 미리보기 켜짐' : '샘플 일정 미리보기'}
-                </button>
+                  <Sparkles className="h-3 w-3 mr-1" />
+                  {useSamplePreview ? '샘플 일정 켜짐' : '샘플 일정 미리보기'}
+                </Chip>
               )}
             </div>
 

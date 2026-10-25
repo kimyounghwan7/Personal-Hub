@@ -10,6 +10,7 @@ import {
 import { CalendarMode, TodoItem } from '@/components/todos/types';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { SegmentedToggle } from '@/components/ui/segmented-toggle';
 
 type MonthCalendarGridProps = {
   year: number;
@@ -109,30 +110,15 @@ export default function MonthCalendarGrid({
             </span>
           </div>
 
-          <div className="inline-flex items-center rounded-xl border border-slate-200 bg-slate-100 p-1">
-            <button
-              type="button"
-              onClick={() => onChangeCalendarMode('month')}
-              className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
-                calendarMode === 'month'
-                  ? 'bg-[#18865b] text-white shadow-sm'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              Month
-            </button>
-            <button
-              type="button"
-              onClick={() => onChangeCalendarMode('agenda')}
-              className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
-                calendarMode === 'agenda'
-                  ? 'bg-[#18865b] text-white shadow-sm'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              Agenda
-            </button>
-          </div>
+          <SegmentedToggle<CalendarMode>
+            value={calendarMode}
+            onChange={onChangeCalendarMode}
+            size="sm"
+            options={[
+              { value: 'month', label: 'Month' },
+              { value: 'agenda', label: 'Agenda' },
+            ]}
+          />
         </div>
       </div>
 
