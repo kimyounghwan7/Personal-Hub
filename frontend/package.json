@@ -9,15 +9,23 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@radix-ui/react-checkbox": "^1.4.1",
+    "@radix-ui/react-label": "^2.1.17",
+    "@radix-ui/react-separator": "^1.2.0",
+    "@radix-ui/react-slot": "^1.5.0",
     "@supabase/ssr": "^0.10.3",
     "@supabase/supabase-js": "^2.38.0",
     "axios": "^1.5.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "date-fns": "^2.30.0",
     "lucide-react": "^0.279.0",
     "next": "14.2.15",
     "react": "^18",
     "react-calendar": "^4.6.1",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "tailwind-merge": "^3.7.0",
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@types/node": "^20",

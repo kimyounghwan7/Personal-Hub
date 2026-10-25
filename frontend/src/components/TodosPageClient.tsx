@@ -2,7 +2,13 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { AlertTriangle, Clock, Plus, Trash2 } from 'lucide-react';
 import CalendarView from '@/components/CalendarView';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
 import api, { getApiErrorDetail, isNetworkError, isPendingApprovalError, isServerError, isUnauthorizedError } from '@/lib/api';
 import { buildLoginPath } from '@/lib/auth-paths';
 
@@ -138,19 +144,24 @@ export default function TodosPageClient() {
   if (authState === 'error') {
     return (
       <div className="flex items-center justify-center min-h-screen px-4">
-        <div className="bg-white/5 backdrop-blur-xl p-10 rounded-2xl shadow-2xl border border-white/10 text-center max-w-md w-full">
-          <div className="text-5xl mb-6">⚠️</div>
-          <h2 className="text-2xl font-bold text-white mb-3">{errorState.title}</h2>
-          <p className="text-gray-400 mb-8">{errorState.description}</p>
-          <button
-            onClick={() => {
-              void loadTodos();
-            }}
-            className="w-full px-6 py-3 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold hover:from-blue-500 hover:to-purple-500 transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)]"
-          >
-            Retry
-          </button>
-        </div>
+        <Card className="text-center max-w-md w-full p-4">
+          <CardHeader className="items-center">
+            <AlertTriangle className="h-12 w-12 text-amber-400 mb-2" />
+            <CardTitle>{errorState.title}</CardTitle>
+            <CardDescription className="pt-2">{errorState.description}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button
+              onClick={() => {
+                void loadTodos();
+              }}
+              size="lg"
+              className="w-full"
+            >
+              Retry
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }
@@ -158,82 +169,106 @@ export default function TodosPageClient() {
   if (authState === 'pending_approval') {
     return (
       <div className="flex items-center justify-center min-h-screen px-4">
-        <div className="bg-white/5 backdrop-blur-xl p-10 rounded-2xl shadow-2xl border border-white/10 text-center max-w-md w-full">
-          <div className="text-5xl mb-6">⏳</div>
-          <h2 className="text-2xl font-bold text-white mb-3">Approval Pending</h2>
-          <p className="text-gray-400 mb-4">Your account is registered, but an administrator still needs to approve it before you can use the calendar.</p>
-          <div className="flex items-center justify-center gap-2 text-yellow-400 bg-yellow-500/10 border border-yellow-500/20 rounded-lg py-3 px-4">
-            <span className="w-2.5 h-2.5 rounded-full bg-yellow-500 animate-pulse"></span>
-            <span className="font-medium text-sm">Waiting for admin approval…</span>
-          </div>
-        </div>
+        <Card className="text-center max-w-md w-full p-4">
+          <CardHeader className="items-center">
+            <Clock className="h-12 w-12 text-amber-400 mb-2" />
+            <CardTitle>Approval Pending</CardTitle>
+            <CardDescription className="pt-2">
+              Your account is registered, but an administrator still needs to approve it before you can use the calendar.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex justify-center">
+            <Badge variant="warning" className="py-2 px-4 text-sm">
+              <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+              Waiting for admin approval…
+            </Badge>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
+  const completedCount = todos.filter((todo) => todo.status === 'completed').length;
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 py-24 max-w-6xl mx-auto px-4">
-      <div className="md:col-span-2 bg-white/5 backdrop-blur-xl p-6 rounded-2xl shadow-2xl border border-white/10 text-white">
-        <h1 className="text-2xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">My To-Do List</h1>
+      <Card className="md:col-span-2">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+          <div>
+            <CardTitle className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
+              My To-Do List
+            </CardTitle>
+            <CardDescription className="mt-1">
+              Manage your daily tasks and synchronize deadlines with your calendar.
+            </CardDescription>
+          </div>
+          <Badge variant="outline">
+            {completedCount} / {todos.length} Done
+          </Badge>
+        </CardHeader>
 
-        <form onSubmit={handleAddTodo} className="mb-6 flex gap-2">
-          <input
-            type="text"
-            value={newTodo}
-            onChange={(event) => setNewTodo(event.target.value)}
-            maxLength={200}
-            placeholder="Add a new task..."
-            className="flex-1 p-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/30 transition-all"
-          />
-          <button
-            type="submit"
-            className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-xl hover:from-blue-500 hover:to-purple-500 transition-all font-semibold shadow-[0_0_15px_rgba(37,99,235,0.3)]"
-          >
-            Add
-          </button>
-        </form>
+        <CardContent>
+          <form onSubmit={handleAddTodo} className="mb-6 flex gap-2.5">
+            <Input
+              type="text"
+              value={newTodo}
+              onChange={(event) => setNewTodo(event.target.value)}
+              maxLength={200}
+              placeholder="Add a new task..."
+              className="flex-1"
+            />
+            <Button type="submit" className="h-11 px-6">
+              <Plus className="h-4 w-4" />
+              Add
+            </Button>
+          </form>
 
-        {todos.length === 0 ? (
-          <p className="text-gray-500 text-center py-8">No tasks yet. Add one above! ✨</p>
-        ) : (
-          <ul className="space-y-3">
-            {todos.map((todo) => (
-              <li key={todo.id} className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/5 hover:border-white/10 transition-colors group">
-                <div className="flex items-center gap-3">
-                  <input
-                    type="checkbox"
-                    checked={todo.status === 'completed'}
-                    onChange={() => {
-                      void handleToggleTodo(todo);
-                    }}
-                    className="w-5 h-5 cursor-pointer accent-blue-500 rounded"
-                  />
-                  <span className={todo.status === 'completed' ? 'line-through text-gray-500' : 'text-gray-200'}>
-                    {todo.title}
-                  </span>
-                </div>
-                <div className="flex items-center gap-3">
-                  {todo.due_date && (
-                    <span className="text-sm text-gray-500 group-hover:text-gray-400 transition-colors">
-                      {new Date(todo.due_date).toLocaleDateString()}
+          {todos.length === 0 ? (
+            <p className="text-gray-500 text-center py-10">No tasks yet. Add one above!</p>
+          ) : (
+            <ul className="space-y-3">
+              {todos.map((todo) => (
+                <li
+                  key={todo.id}
+                  className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/5 hover:border-white/10 transition-colors group"
+                >
+                  <div className="flex items-center gap-3.5">
+                    <Checkbox
+                      checked={todo.status === 'completed'}
+                      onCheckedChange={() => {
+                        void handleToggleTodo(todo);
+                      }}
+                      aria-label={`Mark ${todo.title} as ${todo.status === 'completed' ? 'pending' : 'completed'}`}
+                    />
+                    <span className={todo.status === 'completed' ? 'line-through text-gray-500' : 'text-gray-200 font-medium'}>
+                      {todo.title}
                     </span>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      void handleDeleteTodo(todo.id);
-                    }}
-                    aria-label={`Delete ${todo.title}`}
-                    className="text-xs px-2.5 py-1 rounded bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20 transition-colors"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    {todo.due_date && (
+                      <Badge variant="outline" className="text-gray-400 font-normal">
+                        {new Date(todo.due_date).toLocaleDateString()}
+                      </Badge>
+                    )}
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => {
+                        void handleDeleteTodo(todo.id);
+                      }}
+                      aria-label={`Delete ${todo.title}`}
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                      Delete
+                    </Button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </CardContent>
+      </Card>
 
       <div className="md:col-span-1">
         <CalendarView todos={todos} />

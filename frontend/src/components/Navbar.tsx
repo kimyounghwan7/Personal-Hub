@@ -2,7 +2,10 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { Calendar, LogIn, LogOut, ShieldCheck } from 'lucide-react';
 import { useAuth } from '@/components/AuthProvider';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { supabase } from '@/lib/supabase';
 
 export default function Navbar() {
@@ -16,41 +19,47 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0a0a0f]/60 backdrop-blur-md border-b border-white/10">
-      <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0a0a0f]/75 backdrop-blur-xl border-b border-white/10">
+      <div className="container mx-auto px-6 py-3.5 flex justify-between items-center">
         <Link href="/" className="font-extrabold text-xl tracking-tight text-white hover:text-blue-400 transition-colors">
           Personal<span className="text-blue-500">Hub</span>
         </Link>
-        <div className="flex items-center gap-4 text-sm font-medium">
-          <Link href="/todos" className="text-gray-300 hover:text-white transition-colors">
-            Calendar
-          </Link>
+        <div className="flex items-center gap-3 text-sm font-medium">
+          <Button asChild variant="ghost" size="sm">
+            <Link href="/todos">
+              <Calendar className="h-4 w-4 text-blue-400" />
+              Calendar
+            </Link>
+          </Button>
 
           {profileStatus === 'ready' && profile?.role === 'admin' && (
-            <Link
-              href="/admin"
-              className="text-purple-400 hover:text-purple-300 transition-colors border border-purple-500/30 px-3 py-1.5 rounded-full bg-purple-500/10 hover:bg-purple-500/20"
-            >
-              Admin
-            </Link>
+            <Button asChild variant="outline" size="sm" className="border-purple-500/30 bg-purple-500/10 text-purple-300 hover:bg-purple-500/20 hover:text-purple-200 rounded-full">
+              <Link href="/admin">
+                <ShieldCheck className="h-3.5 w-3.5" />
+                Admin
+              </Link>
+            </Button>
           )}
 
           {status === 'loading' ? (
-            <span className="text-xs text-gray-500">Checking session…</span>
+            <Badge variant="outline" className="text-gray-400">Checking session…</Badge>
           ) : status === 'authenticated' ? (
-            <button
+            <Button
+              variant="outline"
+              size="sm"
               onClick={handleLogout}
-              className="text-gray-400 hover:text-white transition-colors border border-white/10 px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10"
+              className="rounded-full text-gray-300"
             >
+              <LogOut className="h-3.5 w-3.5" />
               Logout
-            </button>
+            </Button>
           ) : (
-            <Link
-              href="/auth/login"
-              className="text-blue-400 hover:text-blue-300 transition-colors border border-blue-500/30 px-3 py-1.5 rounded-full bg-blue-500/10 hover:bg-blue-500/20"
-            >
-              Sign In
-            </Link>
+            <Button asChild variant="outline" size="sm" className="rounded-full border-blue-500/30 bg-blue-500/10 text-blue-300 hover:bg-blue-500/20">
+              <Link href="/auth/login">
+                <LogIn className="h-3.5 w-3.5" />
+                Sign In
+              </Link>
+            </Button>
           )}
         </div>
       </div>

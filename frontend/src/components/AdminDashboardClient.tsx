@@ -2,6 +2,18 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Check, ShieldAlert, Trash2 } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import api, { isPendingApprovalError, isUnauthorizedError } from '@/lib/api';
 import { buildLoginPath } from '@/lib/auth-paths';
 
@@ -65,7 +77,9 @@ export default function AdminDashboardClient() {
   const handleApproveUser = async (userId: string) => {
     try {
       await api.patch(`/admin/users/${userId}/approve`);
-      setUsers((currentUsers) => currentUsers.map((user) => (user.id === userId ? { ...user, is_approved: true } : user)));
+      setUsers((currentUsers) =>
+        currentUsers.map((user) => (user.id === userId ? { ...user, is_approved: true } : user)),
+      );
     } catch (error) {
       console.error('Failed to approve user:', error);
       alert('Failed to approve user.');
@@ -73,91 +87,111 @@ export default function AdminDashboardClient() {
   };
 
   if (loading) {
-    return <div className="p-8 mt-20 text-gray-300">Loading admin dashboard…</div>;
+    return <div className="p-8 mt-20 text-gray-300 text-center">Loading admin dashboard…</div>;
   }
 
   if (error) {
     return (
       <div className="flex items-center justify-center min-h-screen px-4">
-        <div className="bg-white/5 backdrop-blur-xl p-10 rounded-2xl shadow-2xl border border-white/10 text-center max-w-md w-full">
-          <div className="text-5xl mb-6">🛡️</div>
-          <h2 className="text-2xl font-bold text-white mb-3">Admin access unavailable</h2>
-          <p className="text-gray-400">{error}</p>
-        </div>
+        <Card className="text-center max-w-md w-full p-4">
+          <CardHeader className="items-center">
+            <ShieldAlert className="h-12 w-12 text-red-400 mb-2" />
+            <CardTitle>Admin access unavailable</CardTitle>
+            <CardDescription className="pt-2">{error}</CardDescription>
+          </CardHeader>
+        </Card>
       </div>
     );
   }
 
   return (
     <div className="py-24 max-w-6xl mx-auto px-4">
-      <div className="bg-white/5 backdrop-blur-xl p-8 rounded-2xl shadow-2xl border border-white/10 text-white">
-        <h1 className="text-3xl font-bold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
-          Admin Dashboard - User Management
-        </h1>
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0">
+          <div>
+            <CardTitle className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
+              Admin Dashboard — User Management
+            </CardTitle>
+            <CardDescription className="mt-1.5">
+              Approve pending registrations and manage user access boundaries.
+            </CardDescription>
+          </div>
+          <Badge variant="secondary">{users.length} Users</Badge>
+        </CardHeader>
 
-        <div className="overflow-x-auto">
-          <table className="min-w-full text-left border-collapse">
-            <thead>
-              <tr className="border-b border-white/10">
-                <th className="py-4 px-4 font-semibold text-sm text-gray-400">ID</th>
-                <th className="py-4 px-4 font-semibold text-sm text-gray-400">Email</th>
-                <th className="py-4 px-4 font-semibold text-sm text-gray-400">Role</th>
-                <th className="py-4 px-4 font-semibold text-sm text-gray-400">Status</th>
-                <th className="py-4 px-4 font-semibold text-sm text-gray-400">Joined Date</th>
-                <th className="py-4 px-4 font-semibold text-sm text-gray-400 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>ID</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Role</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Joined Date</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {users.map((user) => (
-                <tr key={user.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
-                  <td className="py-4 px-4 text-sm text-gray-500 font-mono">{user.id.slice(0, 8)}...</td>
-                  <td className="py-4 px-4 text-sm font-medium text-gray-200">{user.email}</td>
-                  <td className="py-4 px-4 text-sm">
-                    <span
-                      className={`px-2 py-1 rounded text-xs font-semibold ${
-                        user.role === 'admin'
-                          ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
-                          : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
-                      }`}
-                    >
+                <TableRow key={user.id}>
+                  <TableCell className="text-gray-500 font-mono text-xs">
+                    {user.id.slice(0, 8)}...
+                  </TableCell>
+                  <TableCell className="font-medium text-gray-200">{user.email}</TableCell>
+                  <TableCell>
+                    <Badge variant={user.role === 'admin' ? 'secondary' : 'default'}>
                       {user.role}
-                    </span>
-                  </td>
-                  <td className="py-4 px-4 text-sm">
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
                     {user.is_approved ? (
-                      <span className="text-green-400 flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-green-500"></span> Approved</span>
+                      <Badge variant="success">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                        Approved
+                      </Badge>
                     ) : (
-                      <span className="text-yellow-400 flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></span> Pending</span>
+                      <Badge variant="warning">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                        Pending
+                      </Badge>
                     )}
-                  </td>
-                  <td className="py-4 px-4 text-sm text-gray-500">{new Date(user.created_at).toLocaleDateString()}</td>
-                  <td className="py-4 px-4 text-right flex justify-end gap-2">
-                    {!user.is_approved && (
-                      <button
-                        onClick={() => handleApproveUser(user.id)}
-                        className="text-sm px-3 py-1.5 rounded bg-green-500/20 text-green-400 hover:bg-green-500/30 transition-colors border border-green-500/30 font-medium"
+                  </TableCell>
+                  <TableCell className="text-gray-400">
+                    {new Date(user.created_at).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-2">
+                      {!user.is_approved && (
+                        <Button
+                          variant="success"
+                          size="sm"
+                          onClick={() => {
+                            void handleApproveUser(user.id);
+                          }}
+                        >
+                          <Check className="h-3.5 w-3.5" />
+                          Approve
+                        </Button>
+                      )}
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => {
+                          void handleDeleteUser(user.id);
+                        }}
+                        disabled={user.role === 'admin'}
                       >
-                        Approve
-                      </button>
-                    )}
-                    <button
-                      onClick={() => handleDeleteUser(user.id)}
-                      disabled={user.role === 'admin'}
-                      className={`text-sm px-3 py-1.5 rounded font-medium border transition-colors ${
-                        user.role === 'admin'
-                          ? 'bg-gray-800 text-gray-600 cursor-not-allowed border-gray-700'
-                          : 'bg-red-500/10 text-red-400 hover:bg-red-500/20 border-red-500/30'
-                      }`}
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
+                        <Trash2 className="h-3.5 w-3.5" />
+                        Delete
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
     </div>
   );
 }
