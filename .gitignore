@@ -8,6 +8,15 @@
 !.env.example
 
 # ==========================================
+# Agent Workflow & Drafts (Local-only)
+# ==========================================
+drafts/
+.claude/settings.local.json
+CLAUDE.local.md
+.pytest_cache/
+
+
+# ==========================================
 # Frontend (Next.js / Node)
 # ==========================================
 # dependencies
