@@ -11,52 +11,53 @@
 ```mermaid
 flowchart LR
     A["1단계: 프로젝트 점검 및<br/>SLUDemo 형 워크플로우 이식"] --> B["2단계: 코드 위험 지점 보강 및<br/>미완성 기능(To-Do/스키마/CSP) 수정"]
-    B --> C["3단계: 클라우드 배포(Vercel · Render/Fly)<br/>및 하드 캡(Spend Cap) 설정"]
-    C --> D["4단계: 도메인 구매 · Cloudflare WAF<br/>연결 및 실전 공격/부하 검증"]
+    B --> C["3단계: shadcn/ui 도입 및<br/>빌드·린트·기능 점검"]
+    C --> D["4단계: Render · Vercel 배포 및<br/>도메인 · Cloudflare WAF 연결"]
     style A fill:#1f6f3f,stroke:#3fb950,color:#ffffff
     style B fill:#1f6f3f,stroke:#3fb950,color:#ffffff
-    style C fill:#7a5a00,stroke:#d29922,color:#ffffff
+    style C fill:#1f6f3f,stroke:#3fb950,color:#ffffff
+    style D fill:#7a5a00,stroke:#d29922,color:#ffffff
 ```
 
 | 단계 | 상태 | 어디까지 |
 |---|---|---|
-| 1 프로젝트 점검 · 워크플로우 이식 | **끝**(2026-10-25) | 코드 정적 점검 · Mermaid 아키텍처 및 5대 과금 위험 지점 분석([보고서](reports/2026-10-25_project-inspection-and-cost-architecture.md)) · `SLUDemo` 방식 거버넌스(`CLAUDE.md`, `AGENTS.md`, `.claude/rules/`, `.claude/agents/`, `.claude/hooks/`, `docs/`, `tools/`) 이식 완료 |
-| 2 코드 위험 지점 · 기능 보강 | **끝**(2026-10-25) | `due_date` 타입(`Optional[datetime]`) 일치 · 입력 상한(`max_length`, `MAX_TODOS_PER_USER=500`, CS-3) · DB 커넥션 풀 상한(`pool_size=5, max_overflow=5`) · 관리자 삭제 예외 원문 은닉 · CSP `connect-src` 배포 도메인 동적 허용 · To-Do 완료(`PUT`)/삭제(`DELETE`) UI 연결 · `pytest` 30개 전수 통과 |
-| 3 클라우드 배포 · 비용 상한 설정 | **대기 (다음 단계)** | Supabase Free(또는 Spend Cap) · Vercel Hobby · 고정형 백엔드 컨테이너 배포([런북](runbooks/cost-safe-deployment.md)) |
-| 4 도메인 · Cloudflare WAF 연결 | **예정** | 도메인 구매 → Cloudflare 네임서버 연결 → DNS 레코드(`@`, `api`) 및 `/api/*` Rate Limiting 규칙 적용 |
+| 1 프로젝트 점검 · 워크플로우 이식 | **끝**(2026-10-25) | 코드 정적 점검 · Mermaid 아키텍처 및 5대 과금 위험 지점 분석([보고서](reports/2026-10-25_project-inspection-and-cost-architecture.md)) · `SLUDemo` 방식 거버넌스 이식 완료 |
+| 2 코드 위험 지점 · 기능 보강 | **끝**(2026-10-25) | `due_date` 타입(`Optional[datetime]`) 일치 · 입력 상한(`max_length`, `MAX_TODOS_PER_USER=500`, CS-3) · DB 커넥션 풀 상한 · 관리자 삭제 예외 은닉 · CSP 동적 허용 · To-Do 완료(`PUT`)/삭제(`DELETE`) 연결 · `pytest` 30개 통과 |
+| 3 `shadcn/ui` 도입 · 빌드/린트 점검 | **끝**(2026-10-25) | 프론트엔드 `shadcn/ui` 설정(`components.json`, `lib/utils.ts`, CSS 변수 토큰) 및 7종 부품(`button`, `input`, `card`, `badge`, `table`, `checkbox`, `label`) 전 화면 적용 · `npm run lint` · `tsc --noEmit` · `next build` 통과 |
+| 4 Render · Vercel 배포 · 도메인 연결 | **대기 (다음 단계)** | 백엔드 Render 배포 확정(ARCH-3) · 도메인 시장조사 완료([도메인 비교 보고서](reports/2026-10-25_domain-market-research.md)) → 로컬 브라우저 최종 눈 확인 후 배포 및 Cloudflare WAF 연결([런북](runbooks/cost-safe-deployment.md)) |
 
 ## 2. 지금 · 다음 · 정할 것
 
 **지금(2026-10-25)**:
-- **1단계(워크플로우 이식)** 와 **2단계(배포 전 코드 위험 지점 및 To-Do 완료/삭제 기능 보강)** 를 모두 완료했다.
-- 보강된 내용:
-  - `backend/app/schemas/todo.py`: `due_date` 를 `Optional[datetime]` 으로 ORM 모델과 일치시키고, `title`(`1..200`), `description`(`<=2000`), `priority`(`1..5`), `status`(`"pending" | "completed"`) 제약을 강제했다(결정 CS-3).
-  - `backend/app/services/todo_service.py` · `admin_service.py` · `db/database.py`: 사용자당 Todo 최대 건수(`MAX_TODOS_PER_USER = 500`) 및 조회 `limit` 상한 적용, 관리자 회원 삭제 시 내부 예외 문자열 노출 차단, SQLAlchemy 커넥션 풀 상한(`pool_size=5, max_overflow=5`) 설정을 완료했다.
-  - `frontend/next.config.mjs` · `TodosPageClient.tsx` · `CalendarView.tsx`: 배포 환경의 `NEXT_PUBLIC_API_URL` origin 을 CSP `connect-src` 에 동적으로 허용하고 `X-Frame-Options: DENY` 로 통일했으며, 할 일 완료 토글(`PUT`)과 삭제(`DELETE`) 버튼을 연결했다.
-  - 검증: `python3 tools/docs_check.py`(`rc=0`), `python3 tools/code_shape.py`(`rc=0`), 백엔드 단위 테스트 `pytest` 30건 전수 통과(`rc=0`).
+- **3단계(`shadcn/ui` 도입 및 프론트엔드 전체 화면 적용·검증)** 를 완료했다(결정 ARCH-4):
+  - `frontend/components.json` · `frontend/src/lib/utils.ts` · `frontend/tailwind.config.ts` · `frontend/src/app/globals.css`: 다크 글래스모피즘 테마와 호환되는 `shadcn/ui` 디자인 토큰 설정 완료.
+  - `frontend/src/components/ui/`: `button.tsx`, `input.tsx`, `card.tsx`, `badge.tsx`, `table.tsx`, `checkbox.tsx`, `label.tsx` 7종 컴포넌트 구현.
+  - 화면 리팩토링: 랜딩(`app/page.tsx`), 내비게이션(`Navbar.tsx`), 로그인/회원가입(`LoginPageClient.tsx`), 투두/캘린더(`TodosPageClient.tsx`, `CalendarView.tsx`), 관리자 대시보드(`AdminDashboardClient.tsx`) 전체를 `shadcn/ui` 부품으로 교체 완료.
+  - 검증: `npm run lint` (`✔ No ESLint warnings or errors`), `npx tsc --noEmit` (`rc=0`), `npm run build` (정적/동적 라우트 전체 프로덕션 빌드 성공, `rc=0`).
 
-**다음 할 것 (3단계 — 클라우드 배포 및 하드 캡 설정)**:
-1. [과금 폭탄 방지 배포 런북](runbooks/cost-safe-deployment.md)에 따라 백엔드(Render 또는 Fly.io 단일 고정 인스턴스)와 프론트엔드(Vercel Hobby)를 배포한다.
-2. 도메인 구매 후 Cloudflare 무료 DNS Proxy 및 `/api/*` Rate Limiting 규칙을 연결한다(4단계).
+**다음 할 것 (로컬 웹 UI 실제 확인 및 4단계 배포 진입)**:
+1. 로컬에서 프론트엔드(`http://localhost:3000`)와 백엔드(`http://localhost:8000`)를 띄워 실제 웹 화면 퀄리티와 동작을 브라우저에서 확인한다.
+2. 확인 후 [과금 폭탄 방지 배포 런북](runbooks/cost-safe-deployment.md)에 따라 Render(백엔드, 결정 ARCH-3) + Vercel Hobby(프론트엔드) 배포 및 도메인 연결로 넘어간다.
 
-**지금 정해야 할 것 (사용자 결정 사항)**:
-1. **백엔드 배포 플랫폼 선택**(`drafts/decision-candidates.md` 후보 2): **Render**(설정 간편, Free/$7 고정)와 **Fly.io** 중 어느 플랫폼으로 3단계 배포를 진행할지 선택해 주세요.
-2. **도메인 준비 상태**: 이미 보유하신 도메인이 있는지, 아니면 Cloudflare Registrar 등에서 새로 구매해 연결할지 알려주세요.
-3. **`shadcn/ui` 도입 여부**(`drafts/decision-candidates.md` 후보 1): 현행 Tailwind CSS UI로 먼저 배포까지 완주할지, 배포 전에 `shadcn/ui` 컴포넌트로 개편할지 선택해 주세요.
+**지금 정해야 할 것 (사용자 확인 사항)**:
+1. **로컬 개발 서버 구동 확인**: 브라우저(`http://localhost:3000`)에서 바로 웹 퀄리티를 확인하실 수 있도록 백엔드(`uvicorn`)와 프론트엔드(`npm run dev`) 로컬 서버를 지금 띄워 드릴까요? (아래 안내된 명령으로 직접 실행하셔도 됩니다.)
+2. **도메인 선택**: 로컬 웹 퀄리티 확인 후 배포할 때 사용할 도메인 확장자(`.com` / `.dev` vs `.kr`)와 대행사([도메인 시장조사 보고서](reports/2026-10-25_domain-market-research.md) 참고)를 정해주시면 됩니다.
 
 ## 3. 열린 문제 (해결 현황)
 
 | 문제 | 위치 | 상태 |
 |---|---|---|
 | `due_date` 타입 불일치 (`date` vs ISO `datetime`) | `backend/app/schemas/todo.py`, `frontend/src/components/TodosPageClient.tsx` | **해결 완료**(2026-10-25, `Optional[datetime]` 통일 및 단위 시험 검증) |
-| To-Do 완료 체크(`readOnly`) 및 삭제 버튼 미구현 | `frontend/src/components/TodosPageClient.tsx` | **해결 완료**(2026-10-25, `handleToggleTodo` `PUT` · `handleDeleteTodo` `DELETE` 연결) |
+| To-Do 완료 체크(`readOnly`) 및 삭제 버튼 미구현 | `frontend/src/components/TodosPageClient.tsx` | **해결 완료**(2026-10-25, `shadcn/ui` `Checkbox` · `Button` 으로 `PUT`/`DELETE` 연결) |
 | 프로덕션 CSP `connect-src` 외부 백엔드 도메인 차단 | `frontend/next.config.mjs` | **해결 완료**(2026-10-25, `NEXT_PUBLIC_API_URL` origin 동적 추가) |
 | API 입력 길이(`max_length`) 및 조회 `limit` 미설정 | `backend/app/schemas/todo.py`, `backend/app/services/todo_service.py` | **해결 완료**(2026-10-25, `Field(max_length=...)` 및 `MAX_TODOS_PER_USER=500` 적용) |
-| 로컬 `frontend/node_modules` 미설치 상태 | `frontend/` | 로컬에서 `npm run lint` 실행이 필요하면 `cd frontend && npm ci` 실행 필요 (허락 후 진행) |
+| 로컬 `frontend/node_modules` 및 ESLint/빌드 검증 | `frontend/` | **해결 완료**(2026-10-25, 의존성 설치 · `.eslintrc.json` 구성 · `npm run lint` 및 `next build` 통과) |
 
 ## 4. 이력
 
 | 날짜 | 한 일 | 문서 |
 |---|---|---|
+| 2026-10-25 | 3단계 완료 — `shadcn/ui` 7종 컴포넌트(`Button`, `Input`, `Card`, `Badge`, `Table`, `Checkbox`, `Label`) 도입 및 전체 화면 리팩토링, `npm run lint` · `tsc` · `next build` 통과 | [decisions (ARCH-4)](decisions.md) |
+| 2026-10-25 | 백엔드 배포 플랫폼 Render 확정(ARCH-3) · 배포 전 `shadcn/ui` 도입 및 기능 점검 확정(ARCH-4) · 도메인 확장자/대행사 시장조사 보고서 작성 | [도메인 시장조사 보고서](reports/2026-10-25_domain-market-research.md) · [decisions](decisions.md) |
 | 2026-10-25 | 2단계 완료 — 백엔드 스키마(`due_date: datetime`, `max_length`)·서비스 상한(`MAX_TODOS_PER_USER=500`)·DB 풀 상한·예외 은닉 보강, 프론트엔드 CSP 동적 origin 허용 및 To-Do 완료/삭제 UI 연결, `pytest` 30개 통과 | [점검·아키텍처 보고서](reports/2026-10-25_project-inspection-and-cost-architecture.md) |
 | 2026-10-25 | 1단계 완료 — 프로젝트 전체 정적 점검 · `shadcn/ui` 미도입 확인 · Mermaid 시스템 아키텍처 2종 및 과금 폭탄 5대 위험 지점 보고서 작성 · `SLUDemo` 에이전트 워크플로우 마이그레이션 완료 | [워크플로우 이식 보고서](reports/2026-10-25_workflow-migration-from-sludemo.md) |

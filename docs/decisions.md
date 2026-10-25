@@ -46,3 +46,6 @@
 |---|---|---|---|---|
 | **ARCH-1** | 신규 가입자는 DB 트리거와 `/api/v1/auth/profile-sync` 를 통해 기본 미승인(`is_approved=False`, `role='user'`)으로 생성하고, `ADMIN_EMAIL` 일치 계정만 자동 관리자 승격 및 승인 처리한다 | 개인 허브 특성상 허가되지 않은 외부 가입자가 임의로 데이터를 생성해 DB 자원을 쓰는 것을 막는다 | 2026-10-25 | decided |
 | **ARCH-2** | 백엔드 DB 연결은 IPv4 호환 및 커넥션 풀링을 지원하는 Supabase Session Pooler(포트 `6543`)를 기본으로 사용한다 | 로컬 Docker 및 IPv4 전용 컨테이너 호스팅 환경에서의 연결 실패와 커넥션 고갈을 함께 방지한다 | 2026-10-25 | decided |
+| **ARCH-3** | 백엔드 컨테이너 배포 플랫폼은 **Render**(Free 또는 Starter 고정형 단일 인스턴스, Auto-scaling 비활성)로 확정한다 | GitHub 연동 배포가 단순하고 무제한 종량제 오토스케일링이 없어 과금 폭탄 위험을 원천 차단할 수 있다 | 2026-10-25 | decided |
+| **ARCH-4** | 프론트엔드 UI 는 배포 전에 **`shadcn/ui`**(Radix UI + Tailwind CSS 기반)를 도입하여 컴포넌트를 표준화하고 로컬 기능 점검을 마친 뒤 배포한다 | 일관된 다크 테마 디자인 토큰과 접근성이 검증된 부품(`Button`, `Input`, `Card`, `Badge`, `Table`, `Checkbox`)으로 화면 완성도를 높인 뒤 배포한다 | 2026-10-25 | decided |
+
