@@ -29,26 +29,21 @@ flowchart LR
 ## 2. 지금 · 다음 · 정할 것
 
 **지금(2026-10-25)**:
-- **초안(`drafts/`)의 정본 승격(`ARCH-5`, `WF-9`) 및 모델별 전담 에이전트 분리 구성**을 완료했다:
-  - **모델별 전담 에이전트 3종 구성(결정 WF-9)**:
-    - [`backend-dev`](../.claude/agents/backend-dev.md): **Gemini 4 Argon** (`model: gemini-4-argon`, `Model="inherit"`) — 백엔드/DB 스키마/보안/아키텍처 하니스 전담.
-    - [`frontend-dev`](../.claude/agents/frontend-dev.md): **Gemini 3.8 Flash** (`model: gemini-3.8-flash`, `Model="flash"`) — Next.js 프론트엔드 UI/컴포넌트 전담.
-    - [`html-mockup-writer`](../.claude/agents/html-mockup-writer.md): **Gemini 3.8 Flash** (`model: gemini-3.8-flash`, `Model="flash"`) — 단독 실행형 HTML 디자인 목업(`drafts/mockups/personal-hub-standalone-mock.html`, `todo-calendar-workspace.html`) 전담 작성 완료.
-  - **백엔드 · DB 스키마 및 규칙 승격(결정 ARCH-5, WF-9)**:
-    - `backend/app/models/todo.py` · `backend/app/schemas/todo.py`: 멀티데이 일정(`started_on`), 카테고리(`category`, `TodoCategory` Literal, `S8`), 소프트 삭제 3종 세트(`deleted_at`, `deleted_by`, `delete_reason`, `S7`) 및 중복 허용 docstring(`S2`) 반영.
-    - `backend/app/services/todo_queries.py` · `todo_service.py` · `endpoints/todos.py`: 읽기 전용 캘린더 기간 조립(`TodoQueries`)과 쓰기 트랜잭션(`TodoService`) 분리(`R3`, `C2`, `C3`).
-    - `backend/alembic/versions/8c3e19a4d701_add_calendar_span_and_soft_delete_to_todos.py`: 스키마 확장 및 활성 행 부분 인덱스(`ix_todos_user_due_live WHERE deleted_at IS NULL`, `S6`) 마이그레이션 추가.
-    - `.claude/rules/backend.md` 및 `backend/tests/test_architecture_harness.py`: `P1~P5`, `R1~R5`, `C1~C5`, `S1~S8` 규칙 편입 및 AST/스키마 자동 하니스 + Red-check 구현 (`pytest` 36개 전체 통과).
+- **Tone 3 무채색 화이트/슬레이트(`#F4F6F8` / `#FFFFFF` / `#E5E8EB`) + 진한 제이드 그린 Primary(`#18865B` / 파스텔 그린 틴트 `#E6F4EE`) + 네이버페이 부동산(`fin.land.naver.com`) 스타일 UI 전면 반영(결정 ARCH-5)** 을 완료했다:
+  - **Next.js 프론트엔드 전체 적용(`frontend-dev`, Gemini 3.8 Flash)**:
+    - `frontend/src/app/globals.css` · `CalendarCustom.css` · `frontend/src/components/ui/*`: 어두운 녹색 배경을 제거하고 쿨 라이트 그레이(`#F4F6F8`) 바탕 + 순백(`#FFFFFF`) 카드 + 슬레이트 헤어라인(`#E5E8EB`) + 진한 제이드 그린 Primary(`#18865B`) + 파스텔 그린 틴트(`#E6F4EE` / `#126B48`) 토큰 적용.
+    - `Navbar.tsx` · `TodosPageClient.tsx` · `todos/{MonthCalendarGrid,UndatedBacklogRail,ScheduleMiniStrip}.tsx` · `page.tsx` · `LoginPageClient.tsx` · `AdminDashboardClient.tsx`: `fin.land.naver.com/map` 스타일의 크리스프 화이트 GNB, 알약형(Pill) 다중 필터 바, 좌측 고밀도 월간 캘린더 캔버스 + 우측 도킹형 Task Peek & 미지정 백로그 패널 반영 (`npm run lint` · `tsc --noEmit` 통과).
+  - **단독 실행형 HTML 목업 동기화(`html-mockup-writer`, Gemini 3.8 Flash)**:
+    - `drafts/mockups/personal-hub-standalone-mock.html` 및 `drafts/mockups/todo-calendar-workspace.html` 을 동일한 Tone 3 진한 제이드 그린(`#18865B`) + 네이버 부동산 스타일 Split-View / 알약형 필터 바로 갱신 완료.
 
-**다음 할 것 (로컬 확인 · DB 마이그레이션 반영 · 4단계 배포 진입)**:
-1. 단독 HTML 디자인 목업(`drafts/mockups/personal-hub-standalone-mock.html`) 및 실행 중인 로컬 웹(`http://localhost:3000/todos`)에서 UI/UX를 확인한다.
+**다음 할 것 (로컬 화면 최종 확인 · DB 마이그레이션 반영 · 4단계 배포 진입)**:
+1. 단독 HTML 디자인 목업(`drafts/mockups/personal-hub-standalone-mock.html`) 및 실행 중인 로컬 웹(`http://localhost:3000` · `http://localhost:3000/todos`)에서 새로운 Tone 3 + `#18865B` 그린 UI를 확인한다.
 2. 일시 정지된 Supabase 프로젝트를 재개(Restore)한 뒤 `alembic upgrade head` 로 신규 컬럼(`started_on`, `category`, 소프트 삭제 3종 세트)을 실제 DB에 반영한다.
 3. 확인 후 [과금 폭탄 방지 배포 런북](runbooks/cost-safe-deployment.md)에 따라 Render(백엔드, 결정 ARCH-3) + Vercel Hobby(프론트엔드) 배포 및 도메인 연결로 넘어간다.
 
 **지금 정해야 할 것 (사용자 확인 사항)**:
-1. **파스텔 그린 5가지 디자인 톤앤매너 중 최종 선택**:
-   - 비교 보고서([2026-10-25_pastel-green-5-tones-research.md](reports/2026-10-25_pastel-green-5-tones-research.md))와 단독 HTML 실시간 스위처 목업(`drafts/mockups/pastel-green-5-tones-comparison.html`)에서 **Tone 1 ~ Tone 5** 중 마음에 드는 톤앤매너 번호(또는 라이트/다크 짝 조합)를 골라주시면 `frontend-dev`(Gemini 3.8 Flash) 에이전트를 통해 실제 프론트엔드 전체 화면에 즉시 반영하겠습니다.
-2. **Supabase DB 재개 및 배포 진입 시점**: 색상 톤 확정 후 Supabase 프로젝트를 Restore 하여 `alembic upgrade head` 적용 및 Render · Vercel 실제 배포 단계로 넘어갈지 알려주시면 됩니다.
+1. **새로 적용된 Tone 3 + 진한 그린(`#18865B`) + 네이버 부동산 스타일 UI 확인**: 단독 HTML 목업(`drafts/mockups/personal-hub-standalone-mock.html`)과 로컬 브라우저(`http://localhost:3000/todos`)에서 색상 농도와 레이아웃이 의도하신 톤앤매너에 맞는지 확인 부탁드립니다.
+2. **Supabase DB 재개 및 배포 진입 시점**: 디자인 확인 후 Supabase 프로젝트를 Restore 하여 `alembic upgrade head` 적용 및 Render · Vercel 실제 배포 단계로 넘어갈지 알려주시면 됩니다.
 
 ## 3. 열린 문제 (해결 현황)
 
@@ -64,6 +59,7 @@ flowchart LR
 
 | 날짜 | 한 일 | 문서 |
 |---|---|---|
+| 2026-10-25 | Tone 3 무채색 화이트/슬레이트(`#F4F6F8`/`#FFFFFF`/`#E5E8EB`) + 진한 제이드 그린 Primary(`#18865B` / 파스텔 틴트 `#E6F4EE`) + 네이버페이 부동산(`fin.land.naver.com`) 스타일 UI를 프론트엔드 전체(`frontend-dev`)와 단독 HTML 목업(`html-mockup-writer`)에 동시 반영 완료 (`npm run lint` · `tsc` 통과) | [decisions (ARCH-5)](decisions.md) · [frontend.md](../.claude/rules/frontend.md) |
 | 2026-10-25 | 기존 다크 네온 민트 톤 원인 진단 및 파스텔 그린 웹 UI 톤앤매너 5선 조사 보고서 작성 · `html-mockup-writer`(Flash 3.8)로 5개 테마 실시간 전환 단독 HTML 비교 목업(`drafts/mockups/pastel-green-5-tones-comparison.html`) 생성 | [파스텔 그린 5선 비교 보고서](reports/2026-10-25_pastel-green-5-tones-research.md) |
 | 2026-10-25 | 백엔드(`backend-dev`: Gemini 4 Argon) · 프론트엔드(`frontend-dev`: Gemini 3.8 Flash) · HTML 목업(`html-mockup-writer`: Gemini 3.8 Flash) 에이전트 분리(WF-9) · 백엔드 스키마/쿼리 분리(`ARCH-5`) 및 아키텍처 하니스(`test_architecture_harness.py`, `pytest` 36개 통과) 정본 승격 완료 | [decisions (WF-9, ARCH-5)](decisions.md) · [승격 비교 보고서](reports/2026-10-25_draft-to-kb-and-rules-promotion.md) |
 | 2026-10-25 | 파스텔 민트(`#8ee3be`) 테마 적용 · `model-hub` 참조 To-Do/캘린더 HTML 목업 및 백엔드/DB/프론트엔드 설계 초안(`drafts/`) 작성 · 프론트엔드 캘린더/백로그/미니스트립 컴포넌트(`frontend/src/components/todos/*`) 실제 이식 · 초안→KB/룰 승격 체계 비교 분석 보고서 작성 | [승격 비교 보고서](reports/2026-10-25_draft-to-kb-and-rules-promotion.md) |

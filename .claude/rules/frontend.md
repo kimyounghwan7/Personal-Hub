@@ -15,6 +15,9 @@ paths:
 3. **보안 헤더 및 CSP 정합성**:
    - `frontend/next.config.mjs` 와 `frontend/src/middleware.ts` 의 보안 헤더(`X-Frame-Options`, `Content-Security-Policy` 등)가 서로 충돌하지 않게 유지한다.
    - 배포 환경에서 `NEXT_PUBLIC_API_URL` 도메인으로의 요청이 CSP `connect-src` 에 막히지 않도록 관리한다.
-4. **UI 및 검증**:
-   - 모바일·데스크톱 반응형 레이아웃과 다크 톤 디자인 일관성을 유지한다.
-   - 프론트엔드 수정 후에는 `cd frontend && npm run lint` 를 실행해 오류와 경고가 없는지 확인한다.
+4. **UI 디자인 톤앤매너 (`ARCH-5`) 및 검증**:
+   - **Tone 3 무채색 화이트/슬레이트 기반 + 진한 제이드 그린 Primary (`fin.land.naver.com` 스타일)**:
+     - 바탕(Canvas)은 녹색기가 전혀 없는 쿨 라이트 그레이(`#F4F6F8`), 카드/도킹 패널은 순백(`#FFFFFF`), 구분선은 슬레이트 헤어라인(`#E5E8EB` / `border-slate-200`), 본문은 딥 슬레이트(`#191F28` / `text-slate-900`)로 유지한다.
+     - Primary 액션 버튼 · 선택 탭 · 오늘 배지는 **진한 그린(`#18865B`, 호버 `#136C49`, 흰 글씨)** 을 사용하고, 캘린더 기간 막대(Span Bar) · 당일 칩 · 활성 알약 필터는 **파스텔 그린 소프트 틴트(`#E6F4EE` 배경 + `#B6E2CF` 보더 + `#126B48` 텍스트)** 를 사용한다.
+     - 완료된 항목은 `✓` + 저채도 취소선(`text-slate-400 line-through`), 기한 지남(`due < today` & 미완료) 항목은 흐리게 하지 않고 선명한 로즈 레드(`#FFF0F0` 배경 + `#E5484D` 텍스트, `⚠ 지남`)로 강조한다.
+   - 프론트엔드 수정 후에는 `docker compose exec -T frontend npm run lint` 및 `npx tsc --noEmit` 을 실행해 오류와 경고가 없는지 확인한다.

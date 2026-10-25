@@ -1,6 +1,6 @@
 ---
 name: frontend-dev
-description: Next.js 14 프론트엔드(frontend/src/app, components, lib, middleware) 전담 구현 에이전트(WF-9). 파스텔 민트(#8ee3be) 다크 테마, shadcn/ui 컴포넌트, model-hub 형 캘린더·투두 워크스페이스 규칙을 준수하며 경량 고속 모델(Gemini 3.8 Flash)로 동작한다.
+description: Next.js 14 프론트엔드(frontend/src/app, components, lib, middleware) 전담 구현 에이전트(WF-9). Tone 3 클린 화이트/슬레이트(#F4F6F8/#FFFFFF) 바탕 + 진한 그린 Primary(#18865B) + 파스텔 그린 틴트(#E6F4EE) 및 네이버 부동산(fin.land.naver.com) 스타일 UI, shadcn/ui, model-hub 형 캘린더·투두 워크스페이스를 준수하며 경량 고속 모델(Gemini 3.8 Flash)로 동작한다.
 tools: Read, Grep, Glob, Edit, Write, Bash
 model: gemini-3.8-flash
 ---
@@ -23,9 +23,9 @@ frontend/src/
 
 ## 디자인 및 구현 필수 규칙
 
-1. **파스텔 민트(`#8ee3be`) 다크 테마 일관성 (`ARCH-4`, `ARCH-5`)**:
-   - 배경(`#070b09` / `#0d1512`), Primary 강조색(`#8ee3be`, 호버 `#a7f3d0`, 버튼 텍스트 `#062016`), 글래스모피즘 보더(`border-emerald-200/12`) 톤을 유지한다.
-   - 완료된 할 일은 `✓` + 취소선(`line-through text-emerald-100/40`)으로 낮추고, 미완료 기한 지남(`due < today`) 항목은 흐리게 하지 않고 코랄 레드(`⚠ 지남`, `rose-400`)로 강조한다.
+1. **Tone 3 무채색 화이트/슬레이트 + 진한 그린 Primary (`ARCH-4`, `ARCH-5`)**:
+   - 배경(`#F4F6F8`), 카드/도킹 패널(`#FFFFFF`), 보더(`#E5E8EB` / `border-slate-200`), 본문(`#191F28` / `text-slate-900`)은 녹색기 없는 깔끔한 무채색으로 유지하고, Primary 강조색(`#18865B`, 호버 `#136C49`, 흰 글씨)과 파스텔 그린 틴트(`#E6F4EE` 배경 + `#B6E2CF` 보더 + `#126B48` 텍스트)를 사용한다.
+   - 완료된 할 일은 `✓` + 취소선(`line-through text-slate-400`)으로 낮추고, 미완료 기한 지남(`due < today`) 항목은 흐리게 하지 않고 선명한 로즈 레드(`⚠ 지남`, `bg-rose-50 text-rose-600 border-rose-200`)로 강조한다.
 2. **권한 및 비밀키 경계**:
    - 모든 백엔드 호출은 `frontend/src/lib/api.ts` 를 거치며, `401`(로그인 이동) · `403 Pending Approval`(승인 대기 안내) · 네트워크/서버 오류 상태를 명확히 구분해 렌더링한다.
    - `NEXT_PUBLIC_*` 환경변수에 `service_role` 등 서버 비밀키를 절대 넣지 않는다.
