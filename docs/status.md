@@ -29,21 +29,23 @@ flowchart LR
 ## 2. 지금 · 다음 · 정할 것
 
 **지금(2026-10-25)**:
-- **Tone 3 무채색 화이트/슬레이트(`#F4F6F8` / `#FFFFFF` / `#E5E8EB`) + 진한 제이드 그린 Primary(`#18865B` / 파스텔 그린 틴트 `#E6F4EE`) + 네이버페이 부동산(`fin.land.naver.com`) 스타일 UI 전면 반영(결정 ARCH-5)** 을 완료했다:
-  - **Next.js 프론트엔드 전체 적용(`frontend-dev`, Gemini 3.8 Flash)**:
-    - `frontend/src/app/globals.css` · `CalendarCustom.css` · `frontend/src/components/ui/*`: 어두운 녹색 배경을 제거하고 쿨 라이트 그레이(`#F4F6F8`) 바탕 + 순백(`#FFFFFF`) 카드 + 슬레이트 헤어라인(`#E5E8EB`) + 진한 제이드 그린 Primary(`#18865B`) + 파스텔 그린 틴트(`#E6F4EE` / `#126B48`) 토큰 적용.
-    - `Navbar.tsx` · `TodosPageClient.tsx` · `todos/{MonthCalendarGrid,UndatedBacklogRail,ScheduleMiniStrip}.tsx` · `page.tsx` · `LoginPageClient.tsx` · `AdminDashboardClient.tsx`: `fin.land.naver.com/map` 스타일의 크리스프 화이트 GNB, 알약형(Pill) 다중 필터 바, 좌측 고밀도 월간 캘린더 캔버스 + 우측 도킹형 Task Peek & 미지정 백로그 패널 반영 (`npm run lint` · `tsc --noEmit` 통과).
-  - **단독 실행형 HTML 목업 동기화(`html-mockup-writer`, Gemini 3.8 Flash)**:
-    - `drafts/mockups/personal-hub-standalone-mock.html` 및 `drafts/mockups/todo-calendar-workspace.html` 을 동일한 Tone 3 진한 제이드 그린(`#18865B`) + 네이버 부동산 스타일 Split-View / 알약형 필터 바로 갱신 완료.
+- **기준점(Tone 3 화이트/슬레이트 + 진한 그린 `#18865B` · 네이버페이 부동산 스타일) 기반 디자인 아톰(Design Atoms) 재설계 및 랜딩 페이지 톤앤매너 통일**을 완료했다:
+  - **디자인 아톰 재설계 및 코드 반영(`frontend-dev`, Gemini 3.8 Flash)**:
+    - 신규 핵심 아톰 2종: [`ui/chip.tsx`](../frontend/src/components/ui/chip.tsx)(알약형 인터랙티브 필터 칩 겸 상태/카테고리 태그, `active`·`dotColor`·`count` 지원) 및 [`ui/segmented-toggle.tsx`](../frontend/src/components/ui/segmented-toggle.tsx)(`aria-pressed` 단일 선택 뷰 스위처) 신설.
+    - 기존 아톰 정밀 교정: [`ui/card.tsx`](../frontend/src/components/ui/card.tsx)(`rounded-xl` `12px` + `1px solid #E5E8EB` 슬레이트 헤어라인), [`ui/button.tsx`](../frontend/src/components/ui/button.tsx) 및 [`ui/input.tsx`](../frontend/src/components/ui/input.tsx)(`36px` `h-9` 기본 높이 통일).
+    - 랜딩 페이지([`app/page.tsx`](../frontend/src/app/page.tsx)) 기준점 일치화: 기존 어두운 블러 이미지를 제거하고 `#F4F6F8` 캔버스 + `#FFFFFF` 카드 + `Chip` 스펙 알약 바 + 우측 **미니 라이브 워크스페이스 프리뷰 프레임**으로 전면 개편 (`npm run lint` · `tsc --noEmit` 통과).
+  - **단독 HTML 아톰 카탈로그 & 랜딩 목업 작성(`html-mockup-writer`, Gemini 3.8 Flash)**:
+    - `drafts/mockups/design-atoms-and-landing-mock.html` 및 `drafts/mockups/personal-hub-standalone-mock.html` 에 `🧩 01-03. Design Atoms & Patterns` 카탈로그 탭과 `🏠 Landing Page` 탭을 통합 완료.
+  - **4계층 디자인 시스템 재설계 보고서**: [2026-10-25_design-atoms-and-system-redesign.md](reports/2026-10-25_design-atoms-and-system-redesign.md) 작성 완료.
 
-**다음 할 것 (로컬 화면 최종 확인 · DB 마이그레이션 반영 · 4단계 배포 진입)**:
-1. 단독 HTML 디자인 목업(`drafts/mockups/personal-hub-standalone-mock.html`) 및 실행 중인 로컬 웹(`http://localhost:3000` · `http://localhost:3000/todos`)에서 새로운 Tone 3 + `#18865B` 그린 UI를 확인한다.
+**다음 할 것 (아톰·랜딩 피드백 확인 · DB 마이그레이션 반영 · 4단계 배포 진입)**:
+1. 단독 HTML 아톰 카탈로그·랜딩 목업(`drafts/mockups/design-atoms-and-landing-mock.html`) 및 로컬 브라우저(`http://localhost:3000`, `http://localhost:3000/todos`)에서 아톰 규격과 랜딩 페이지를 확인한다.
 2. 일시 정지된 Supabase 프로젝트를 재개(Restore)한 뒤 `alembic upgrade head` 로 신규 컬럼(`started_on`, `category`, 소프트 삭제 3종 세트)을 실제 DB에 반영한다.
 3. 확인 후 [과금 폭탄 방지 배포 런북](runbooks/cost-safe-deployment.md)에 따라 Render(백엔드, 결정 ARCH-3) + Vercel Hobby(프론트엔드) 배포 및 도메인 연결로 넘어간다.
 
 **지금 정해야 할 것 (사용자 확인 사항)**:
-1. **새로 적용된 Tone 3 + 진한 그린(`#18865B`) + 네이버 부동산 스타일 UI 확인**: 단독 HTML 목업(`drafts/mockups/personal-hub-standalone-mock.html`)과 로컬 브라우저(`http://localhost:3000/todos`)에서 색상 농도와 레이아웃이 의도하신 톤앤매너에 맞는지 확인 부탁드립니다.
-2. **Supabase DB 재개 및 배포 진입 시점**: 디자인 확인 후 Supabase 프로젝트를 Restore 하여 `alembic upgrade head` 적용 및 Render · Vercel 실제 배포 단계로 넘어갈지 알려주시면 됩니다.
+1. **디자인 아톰(`01 Foundations ~ 03 Patterns`) 및 신규 랜딩 페이지 피드백**: `drafts/mockups/design-atoms-and-landing-mock.html` (및 `http://localhost:3000`)에서 재설계된 아톰(`Chip`, `SegmentedToggle`, `Button`, `Input`, `Calendar Span Bar`)과 랜딩 페이지 구성에 추가로 조정할 부분이 있으신가요?
+2. **Supabase DB 재개 및 배포 진입 시점**: 아톰/랜딩 검수 후 Supabase 프로젝트를 Restore 하여 `alembic upgrade head` 적용 및 4단계 실제 배포로 넘어갈지 알려주시면 됩니다.
 
 ## 3. 열린 문제 (해결 현황)
 
@@ -59,6 +61,7 @@ flowchart LR
 
 | 날짜 | 한 일 | 문서 |
 |---|---|---|
+| 2026-10-25 | 기준점 워크스페이스 기반 4계층 디자인 아톰(`Chip`, `SegmentedToggle`, `Button`, `Card`, `Input`) 재설계 · 랜딩 페이지(`app/page.tsx`) 동일 톤앤매너 개편 · 단독 HTML 아톰 카탈로그(`design-atoms-and-landing-mock.html`) 및 보고서 작성 | [디자인 아톰 재설계 보고서](reports/2026-10-25_design-atoms-and-system-redesign.md) |
 | 2026-10-25 | Tone 3 무채색 화이트/슬레이트(`#F4F6F8`/`#FFFFFF`/`#E5E8EB`) + 진한 제이드 그린 Primary(`#18865B` / 파스텔 틴트 `#E6F4EE`) + 네이버페이 부동산(`fin.land.naver.com`) 스타일 UI를 프론트엔드 전체(`frontend-dev`)와 단독 HTML 목업(`html-mockup-writer`)에 동시 반영 완료 (`npm run lint` · `tsc` 통과) | [decisions (ARCH-5)](decisions.md) · [frontend.md](../.claude/rules/frontend.md) |
 | 2026-10-25 | 기존 다크 네온 민트 톤 원인 진단 및 파스텔 그린 웹 UI 톤앤매너 5선 조사 보고서 작성 · `html-mockup-writer`(Flash 3.8)로 5개 테마 실시간 전환 단독 HTML 비교 목업(`drafts/mockups/pastel-green-5-tones-comparison.html`) 생성 | [파스텔 그린 5선 비교 보고서](reports/2026-10-25_pastel-green-5-tones-research.md) |
 | 2026-10-25 | 백엔드(`backend-dev`: Gemini 4 Argon) · 프론트엔드(`frontend-dev`: Gemini 3.8 Flash) · HTML 목업(`html-mockup-writer`: Gemini 3.8 Flash) 에이전트 분리(WF-9) · 백엔드 스키마/쿼리 분리(`ARCH-5`) 및 아키텍처 하니스(`test_architecture_harness.py`, `pytest` 36개 통과) 정본 승격 완료 | [decisions (WF-9, ARCH-5)](decisions.md) · [승격 비교 보고서](reports/2026-10-25_draft-to-kb-and-rules-promotion.md) |
