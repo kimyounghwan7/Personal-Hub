@@ -1,20 +1,20 @@
-/* Glassmorphism Dark Theme for React Calendar */
+/* Pastel Green Glassmorphism Dark Theme for React Calendar */
 .react-calendar {
   width: 100% !important;
   border: none !important;
   font-family: inherit !important;
   background: transparent !important;
-  color: #ededed !important;
+  color: #ecfdf5 !important;
 }
 
 .react-calendar__navigation button {
   min-width: 44px;
   background: none;
-  color: white;
-  font-size: 1.1rem;
+  color: #ecfdf5;
+  font-size: 1.05rem;
   font-weight: 600;
   transition: all 0.2s;
-  border-radius: 0.5rem;
+  border-radius: 0.65rem;
 }
 
 .react-calendar__navigation button:disabled {
@@ -23,15 +23,16 @@
 
 .react-calendar__navigation button:enabled:hover,
 .react-calendar__navigation button:enabled:focus {
-  background: rgba(255, 255, 255, 0.1) !important;
+  background: rgba(142, 227, 190, 0.12) !important;
+  color: #a7f3d0 !important;
 }
 
 .react-calendar__month-view__weekdays {
   text-align: center;
   text-transform: uppercase;
   font-weight: 700;
-  font-size: 0.8rem;
-  color: #9ca3af;
+  font-size: 0.75rem;
+  color: rgba(167, 243, 208, 0.6);
   margin-bottom: 0.5rem;
 }
 
@@ -40,57 +41,57 @@
 }
 
 .react-calendar__tile {
-  padding: 0.75em 0.5em !important;
-  height: 60px;
+  padding: 0.7em 0.5em !important;
+  height: 56px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  border-radius: 0.5rem;
-  color: #d1d5db;
+  border-radius: 0.65rem;
+  color: #d1fae5;
   transition: all 0.2s;
   position: relative;
 }
 
 .react-calendar__tile:disabled {
   background-color: transparent !important;
-  color: #4b5563 !important;
+  color: #374151 !important;
 }
 
 .react-calendar__tile:enabled:hover,
 .react-calendar__tile:enabled:focus {
-  background: rgba(255, 255, 255, 0.05) !important;
+  background: rgba(142, 227, 190, 0.08) !important;
 }
 
 .react-calendar__tile--now {
-  background: rgba(168, 85, 247, 0.2) !important; /* purple glow */
-  color: #d8b4fe !important;
-  font-weight: bold;
+  background: rgba(142, 227, 190, 0.16) !important;
+  border: 1px solid rgba(142, 227, 190, 0.35) !important;
+  color: #bbf7d0 !important;
+  font-weight: 700;
 }
 
 .react-calendar__tile--now:enabled:hover,
 .react-calendar__tile--now:enabled:focus {
-  background: rgba(168, 85, 247, 0.3) !important;
+  background: rgba(142, 227, 190, 0.24) !important;
 }
 
 .react-calendar__tile--active {
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6) !important;
-  color: white !important;
-  font-weight: bold;
-  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+  background: linear-gradient(135deg, #8ee3be, #6ee7b7) !important;
+  color: #062016 !important;
+  font-weight: 700;
+  box-shadow: 0 4px 18px rgba(142, 227, 190, 0.35);
 }
 
 .react-calendar__tile--active:enabled:hover,
 .react-calendar__tile--active:enabled:focus {
-  background: linear-gradient(135deg, #2563eb, #7c3aed) !important;
+  background: linear-gradient(135deg, #a7f3d0, #8ee3be) !important;
 }
 
-/* Custom neon glow to todo markers */
 .todo-marker {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background-color: #60a5fa;
-  box-shadow: 0 0 8px #60a5fa, 0 0 12px #60a5fa;
+  background-color: #8ee3be;
+  box-shadow: 0 0 8px #8ee3be, 0 0 12px rgba(142, 227, 190, 0.8);
   margin-top: 4px;
 }

@@ -4,24 +4,24 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50',
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8ee3be]/50 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.99]',
   {
     variants: {
       variant: {
         default:
-          'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-500 hover:to-purple-500 shadow-[0_0_20px_rgba(37,99,235,0.3)]',
+          'bg-gradient-to-r from-[#8ee3be] via-[#9be7c6] to-[#7ddbc5] text-[#062016] shadow-[0_0_24px_rgba(142,227,190,0.28)] hover:brightness-105 hover:shadow-[0_0_32px_rgba(142,227,190,0.42)]',
         destructive:
-          'bg-red-500/15 text-red-400 border border-red-500/30 hover:bg-red-500/25',
+          'bg-rose-500/15 text-rose-300 border border-rose-400/25 hover:bg-rose-500/25 hover:border-rose-400/40',
         outline:
-          'border border-white/10 bg-white/5 text-white hover:bg-white/10 hover:text-white backdrop-blur-md',
+          'border border-emerald-200/15 bg-emerald-950/20 text-emerald-50 hover:bg-[#8ee3be]/10 hover:border-[#8ee3be]/35 hover:text-[#bbf7d0] backdrop-blur-md',
         secondary:
-          'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+          'border border-[#8ee3be]/25 bg-[#8ee3be]/12 text-[#a7f3d0] hover:bg-[#8ee3be]/20',
         ghost:
-          'text-gray-300 hover:bg-white/10 hover:text-white',
+          'text-emerald-100/75 hover:bg-[#8ee3be]/10 hover:text-[#bbf7d0]',
         link:
-          'text-blue-400 underline-offset-4 hover:underline hover:text-blue-300',
+          'text-[#8ee3be] underline-offset-4 hover:underline hover:text-[#bbf7d0]',
         success:
-          'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/25',
+          'bg-[#8ee3be]/15 text-[#a7f3d0] border border-[#8ee3be]/35 hover:bg-[#8ee3be]/25',
       },
       size: {
         default: 'h-10 px-5 py-2.5',

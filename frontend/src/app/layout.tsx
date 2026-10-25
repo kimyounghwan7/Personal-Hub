@@ -7,8 +7,8 @@ import Navbar from '@/components/Navbar';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Personal Hub',
-  description: 'Personal Portfolio & Productivity Hub',
+  title: 'Personal Hub — Portfolio & Productivity Workspace',
+  description: 'Cost-safe cloud architecture portfolio and pastel-green productivity hub powered by Next.js, FastAPI, and Supabase.',
 };
 
 export default function RootLayout({
@@ -18,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body className={`${inter.className} bg-[#0a0a0f] text-white antialiased`}>
+      <body className={`${inter.className} min-h-screen bg-[#070c0a] text-white antialiased`}>
         <AuthProvider>
           <Navbar />
           <main className="min-h-screen">{children}</main>
