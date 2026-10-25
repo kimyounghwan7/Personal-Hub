@@ -27,6 +27,7 @@ import {
 import {
   CalendarMode,
   StatusFilterMode,
+  TodoCategoryTag,
   TodoItem,
   WorkspaceViewMode,
 } from '@/components/todos/types';
@@ -61,8 +62,10 @@ export default function TodosPageClient() {
 
   const [todos, setTodos] = useState<TodoItem[]>([]);
   const [newTodoTitle, setNewTodoTitle] = useState('');
+  const [newTodoStartDate, setNewTodoStartDate] = useState('');
   const [newTodoDueDate, setNewTodoDueDate] = useState(todayIso);
   const [newTodoPriority, setNewTodoPriority] = useState<number>(2);
+  const [newTodoCategory, setNewTodoCategory] = useState<TodoCategoryTag>('Work');
 
   const [workspaceView, setWorkspaceView] = useState<WorkspaceViewMode>('calendar');
   const [calendarMode, setCalendarMode] = useState<CalendarMode>('month');
@@ -143,13 +146,16 @@ export default function TodosPageClient() {
     try {
       const response = await api.post<TodoItem>('/todos/', {
         title: newTodoTitle.trim(),
+        started_on: newTodoStartDate || null,
         due_date: payloadDueIso,
         priority: newTodoPriority,
+        category: newTodoCategory,
       });
 
       if (response.data) {
         setTodos((currentTodos) => [...currentTodos, response.data]);
         setNewTodoTitle('');
+        setNewTodoStartDate('');
         setUseSamplePreview(false);
       }
     } catch (error) {
@@ -458,11 +464,39 @@ export default function TodosPageClient() {
             />
             <Input
               type="date"
+              value={newTodoStartDate}
+              onChange={(event) => setNewTodoStartDate(event.target.value)}
+              className="w-full sm:w-36 h-10 text-xs font-mono"
+              aria-label="Start date (optional)"
+              title="시작일 (선택 — 기간 막대용)"
+            />
+            <Input
+              type="date"
               value={newTodoDueDate}
               onChange={(event) => setNewTodoDueDate(event.target.value)}
-              className="w-full sm:w-40 h-10 text-xs font-mono"
+              className="w-full sm:w-36 h-10 text-xs font-mono"
               aria-label="Due date"
+              title="마감일"
             />
+            <select
+              value={newTodoCategory}
+              onChange={(event) => setNewTodoCategory(event.target.value as TodoCategoryTag)}
+              aria-label="Category"
+              className="h-10 rounded-xl border border-emerald-200/15 bg-white/[0.04] px-3 text-xs text-emerald-50 focus:outline-none focus:ring-2 focus:ring-[#8ee3be]"
+            >
+              <option value="Work" className="bg-[#0d1512]">
+                Work
+              </option>
+              <option value="Infra" className="bg-[#0d1512]">
+                Infra
+              </option>
+              <option value="Personal" className="bg-[#0d1512]">
+                Personal
+              </option>
+              <option value="Study" className="bg-[#0d1512]">
+                Study
+              </option>
+            </select>
             <select
               value={newTodoPriority}
               onChange={(event) => setNewTodoPriority(Number(event.target.value))}
