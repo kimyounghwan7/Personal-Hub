@@ -29,20 +29,25 @@ flowchart LR
 ## 2. 지금 · 다음 · 정할 것
 
 **지금(2026-10-25)**:
-- **Docker 개발/배포 컨테이너 분리 구성 및 파스텔 민트(`#8ee3be`) 테마 + `model-hub` 형 To-Do·캘린더 워크스페이스 컴포넌트 이식**을 완료했다:
-  - Docker 환경: 멀티스테이지 `backend/Dockerfile` · `frontend/Dockerfile` · `docker-compose.yml`(`personal-hub-backend-dev:8000`, `personal-hub-frontend-dev:3000`) 및 배포용 `docker-compose.prod.yml` 구성 완료.
-  - 초안 3종(`drafts/`, WF-5 격리): 단독 실행 가능한 HTML 프로토타입(`drafts/mockups/todo-calendar-workspace.html`), 백엔드·DB 스키마 설계서(`drafts/backend-and-db-schema-design.md`), 프론트엔드 컴포넌트 설계서(`drafts/frontend-component-design.md`) 작성 완료.
-  - 프론트엔드 실제 이식: `frontend/src/components/todos/`(`types.ts`, `calendar-math.ts`, `MonthCalendarGrid.tsx`, `UndatedBacklogRail.tsx`, `ScheduleMiniStrip.tsx`) 및 `TodosPageClient.tsx` 에 `▦ Calendar ↔ ≡ List` 전환, 멀티데이 Span Bar, 날짜 미지정 백로그 레일, Task Peek, 5주 미니 타임라인, 샘플 일정 미리보기 토글 반영 완료 (`npm run lint` · `tsc --noEmit` 통과).
-  - 승격 체계 분석: 웹 업계 표준(ADR · 3-Tier Context) vs `model-hub` vs `Personal Hub` 의 초안→KB/룰 승격 방법 비교 보고서([2026-10-25_draft-to-kb-and-rules-promotion.md](reports/2026-10-25_draft-to-kb-and-rules-promotion.md)) 작성 완료.
+- **초안(`drafts/`)의 정본 승격(`ARCH-5`, `WF-9`) 및 모델별 전담 에이전트 분리 구성**을 완료했다:
+  - **모델별 전담 에이전트 3종 구성(결정 WF-9)**:
+    - [`backend-dev`](../.claude/agents/backend-dev.md): **Gemini 4 Argon** (`model: gemini-4-argon`, `Model="inherit"`) — 백엔드/DB 스키마/보안/아키텍처 하니스 전담.
+    - [`frontend-dev`](../.claude/agents/frontend-dev.md): **Gemini 3.8 Flash** (`model: gemini-3.8-flash`, `Model="flash"`) — Next.js 프론트엔드 UI/컴포넌트 전담.
+    - [`html-mockup-writer`](../.claude/agents/html-mockup-writer.md): **Gemini 3.8 Flash** (`model: gemini-3.8-flash`, `Model="flash"`) — 단독 실행형 HTML 디자인 목업(`drafts/mockups/personal-hub-standalone-mock.html`, `todo-calendar-workspace.html`) 전담 작성 완료.
+  - **백엔드 · DB 스키마 및 규칙 승격(결정 ARCH-5, WF-9)**:
+    - `backend/app/models/todo.py` · `backend/app/schemas/todo.py`: 멀티데이 일정(`started_on`), 카테고리(`category`, `TodoCategory` Literal, `S8`), 소프트 삭제 3종 세트(`deleted_at`, `deleted_by`, `delete_reason`, `S7`) 및 중복 허용 docstring(`S2`) 반영.
+    - `backend/app/services/todo_queries.py` · `todo_service.py` · `endpoints/todos.py`: 읽기 전용 캘린더 기간 조립(`TodoQueries`)과 쓰기 트랜잭션(`TodoService`) 분리(`R3`, `C2`, `C3`).
+    - `backend/alembic/versions/8c3e19a4d701_add_calendar_span_and_soft_delete_to_todos.py`: 스키마 확장 및 활성 행 부분 인덱스(`ix_todos_user_due_live WHERE deleted_at IS NULL`, `S6`) 마이그레이션 추가.
+    - `.claude/rules/backend.md` 및 `backend/tests/test_architecture_harness.py`: `P1~P5`, `R1~R5`, `C1~C5`, `S1~S8` 규칙 편입 및 AST/스키마 자동 하니스 + Red-check 구현 (`pytest` 36개 전체 통과).
 
-**다음 할 것 (스키마 확장 반영 여부 확정 및 4단계 배포 진입)**:
-1. 브라우저(`http://localhost:3000/todos`) 및 HTML 목업(`drafts/mockups/todo-calendar-workspace.html`)에서 새 캘린더·투두 워크스페이스 UI를 확인한다.
-2. 백엔드·DB 스키마 확장안(`started_on`, `category`, 소프트 삭제 3종 세트 등)을 실제 Alembic 마이그레이션과 API에 반영할지 결정한 뒤 적용한다.
+**다음 할 것 (로컬 확인 · DB 마이그레이션 반영 · 4단계 배포 진입)**:
+1. 단독 HTML 디자인 목업(`drafts/mockups/personal-hub-standalone-mock.html`) 및 실행 중인 로컬 웹(`http://localhost:3000/todos`)에서 UI/UX를 확인한다.
+2. 일시 정지된 Supabase 프로젝트를 재개(Restore)한 뒤 `alembic upgrade head` 로 신규 컬럼(`started_on`, `category`, 소프트 삭제 3종 세트)을 실제 DB에 반영한다.
 3. 확인 후 [과금 폭탄 방지 배포 런북](runbooks/cost-safe-deployment.md)에 따라 Render(백엔드, 결정 ARCH-3) + Vercel Hobby(프론트엔드) 배포 및 도메인 연결로 넘어간다.
 
 **지금 정해야 할 것 (사용자 확인 사항)**:
-1. **백엔드·DB 스키마 초안(`drafts/backend-and-db-schema-design.md`) 승격 여부**: 초안에 설계한 멀티데이 일정 필드(`started_on`), 카테고리(`category`), 소프트 삭제 3종 세트(`deleted_at`, `deleted_by`, `delete_reason`) 및 `queries.py` 분리 구조를 확정해 실제 백엔드 코드와 Alembic 마이그레이션에 반영할까요?
-2. **초안→KB·룰 승격 파이프라인 권고안 채택 여부**: [승격 비교 보고서](reports/2026-10-25_draft-to-kb-and-rules-promotion.md)에 정리한 `model-hub` 식 **백엔드/DB 규칙 번호(`P/R/C`, `S1~S8`) 편입 + AST/스키마 하니스 테스트(`Red-check`)** 를 `.claude/rules/backend.md` 에 도입할지 정해주시면 됩니다.
+1. **단독 HTML 디자인 목업 및 워크스페이스 확인**: `html-mockup-writer`(Flash 3.8) 에이전트가 생성한 `drafts/mockups/personal-hub-standalone-mock.html` 화면 구성에서 추가로 다듬고 싶은 UI/기능이 있으신가요?
+2. **Supabase DB 재개 및 배포 진입 시점**: Supabase 대시보드에서 프로젝트를 Restore 하신 뒤 `alembic upgrade head` 실행과 Render · Vercel 실제 배포 단계로 바로 넘어갈지 알려주시면 됩니다.
 
 ## 3. 열린 문제 (해결 현황)
 
@@ -58,6 +63,7 @@ flowchart LR
 
 | 날짜 | 한 일 | 문서 |
 |---|---|---|
+| 2026-10-25 | 백엔드(`backend-dev`: Gemini 4 Argon) · 프론트엔드(`frontend-dev`: Gemini 3.8 Flash) · HTML 목업(`html-mockup-writer`: Gemini 3.8 Flash) 에이전트 분리(WF-9) · 백엔드 스키마/쿼리 분리(`ARCH-5`) 및 아키텍처 하니스(`test_architecture_harness.py`, `pytest` 36개 통과) 정본 승격 완료 | [decisions (WF-9, ARCH-5)](decisions.md) · [승격 비교 보고서](reports/2026-10-25_draft-to-kb-and-rules-promotion.md) |
 | 2026-10-25 | 파스텔 민트(`#8ee3be`) 테마 적용 · `model-hub` 참조 To-Do/캘린더 HTML 목업 및 백엔드/DB/프론트엔드 설계 초안(`drafts/`) 작성 · 프론트엔드 캘린더/백로그/미니스트립 컴포넌트(`frontend/src/components/todos/*`) 실제 이식 · 초안→KB/룰 승격 체계 비교 분석 보고서 작성 | [승격 비교 보고서](reports/2026-10-25_draft-to-kb-and-rules-promotion.md) |
 | 2026-10-25 | 3단계 완료 — `shadcn/ui` 7종 컴포넌트(`Button`, `Input`, `Card`, `Badge`, `Table`, `Checkbox`, `Label`) 도입 및 전체 화면 리팩토링, `npm run lint` · `tsc` · `next build` 통과 | [decisions (ARCH-4)](decisions.md) |
 | 2026-10-25 | 백엔드 배포 플랫폼 Render 확정(ARCH-3) · 배포 전 `shadcn/ui` 도입 및 기능 점검 확정(ARCH-4) · 도메인 확장자/대행사 시장조사 보고서 작성 | [도메인 시장조사 보고서](reports/2026-10-25_domain-market-research.md) · [decisions](decisions.md) |

@@ -28,7 +28,11 @@
   - 작업과 변경 성격별로 커밋을 구분해 쪼갠다(`git add -A` 일괄 묶음 금지): ① 백엔드/프론트엔드 기능·보안 코드 변경, ② 테스트·린트 정리, ③ 문서·규칙(`docs/`, `.claude/`) 갱신을 별도 커밋으로 나눈다.
 
 ## 에이전트 역할 분담 (Claude Code · Antigravity 공통)
-- **단일 정본**: 규칙은 `.claude/rules/*.md`(`AGENTS.md` 가 `@[...]` 참조로 복제 없이 공유)에, 리뷰어 · 검증 에이전트 정의는 `.claude/agents/*.md`(`code-reviewer` · `auth-security-reviewer` · `docs-reviewer` · `verifier`) 한 곳에 둔다.
+- **단일 정본**: 규칙은 `.claude/rules/*.md`(`AGENTS.md` 가 `@[...]` 참조로 복제 없이 공유)에, 구현 · 리뷰어 · 검증 · 목업 에이전트 정의는 `.claude/agents/*.md`(`backend-dev` · `frontend-dev` · `html-mockup-writer` · `code-reviewer` · `auth-security-reviewer` · `docs-reviewer` · `verifier`) 한 곳에 둔다.
+- **모델별 구현/목업 에이전트 분리(결정 WF-9)**:
+  - **백엔드(`backend/**`)**: `backend-dev` 에이전트 — **Gemini 4 Argon** (`model: gemini-4-argon`, `Model="inherit"`) 기반으로 계층 규칙(`P/R/C`), DB 스키마(`S1~S8`), 비용/보안 경계(`CS-1~CS-4`), 아키텍처 하니스(`Red-check`)를 수행한다.
+  - **프론트엔드(`frontend/**`)**: `frontend-dev` 에이전트 — **Gemini 3.8 Flash** (`model: gemini-3.8-flash`, `Model="flash"`) 기반으로 Next.js 컴포넌트 · `shadcn/ui` · 파스텔 민트(`#8ee3be`) 다크 테마 UI 구현 및 린트/타입체크를 수행한다.
+  - **단독 HTML 디자인 목업(`drafts/mockups/*.html`)**: `html-mockup-writer` 에이전트 — **Gemini 3.8 Flash** (`model: gemini-3.8-flash`, `Model="flash"`) 기반으로 단독 실행형 HTML 프로토타입을 작성한다.
 - **1단(개별 파일 수정 중)**: 로컬 기계적 가드(`comment-guard.sh` · `shape-guard.sh`)와 직접 `git diff` 점검으로 빠르게 진행한다.
 - **2단(단계 종료 · 인증/배포/비용 설정 변경 직후)**: 누적된 변경 범위(`git diff`)와 문서를 묶어 `code-reviewer` · `auth-security-reviewer` · `docs-reviewer` 를 호출해 치명 지적만 수정한다(3회차 이상 STOP).
 

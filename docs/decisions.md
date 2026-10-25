@@ -26,6 +26,7 @@
 | **WF-6** | 린트 · 포매터 · 보안 검사 규칙을 임의로 끄거나 완화(`noqa`, `eslint-disable` 등)하지 않으며, 변경이 필요하면 항목별로 이유와 영향을 먼저 보고해 승인받는다 | 에이전트가 검사를 통과하려고 규칙을 끄면 결함이 조용히 숨겨진다 | 2026-10-25 | decided |
 | **WF-7** | 본문이 다른 함수 호출 하나뿐인 단순 감싸기(래퍼) 함수를 늘리지 않으며, 편집 직후 `.claude/hooks/shape-guard.sh`(`tools/shape_guard.py`)로 검사한다 | 과도한 래퍼 함수 파편화는 코드 가독성과 추적성을 떨어뜨린다 | 2026-10-25 | decided |
 | **WF-8** | 단계 완료 시 `code-reviewer` · `auth-security-reviewer` · `docs-reviewer` · `verifier` 서브에이전트로 검증하며, 리뷰어는 최대 2회차까지만 수정 확인하고 3회차 이상은 STOP 한다 | 무한 리뷰 루프로 인한 턴 지연을 막으면서 치명적 보안·품질 결함만 정확히 잡는다 | 2026-10-25 | decided |
+| **WF-9** | 구현 에이전트를 모델별로 분리해 백엔드는 **Gemini 4 Argon** 기반 `backend-dev`(`Model="inherit"`), 프론트엔드는 **Gemini 3.8 Flash** 기반 `frontend-dev`(`Model="flash"`), 단독 HTML 디자인 목업은 **Gemini 3.8 Flash** 기반 `html-mockup-writer`(`Model="flash"`)에 맡기며, 백엔드/DB 규칙 승격 시 `test_architecture_harness.py` + Red-check 를 동반한다 | 보안·트랜잭션·스키마 정합성이 중요한 백엔드는 상위 추론 모델(Argon)로 엄격히 다루고, UI 컴포넌트와 단독 HTML 목업은 경량 고속 모델(Flash 3.8)로 빠르게 처리해 속도와 비용 효율을 함께 높인다 | 2026-10-25 | decided |
 
 ---
 
@@ -48,4 +49,5 @@
 | **ARCH-2** | 백엔드 DB 연결은 IPv4 호환 및 커넥션 풀링을 지원하는 Supabase Session Pooler(포트 `6543`)를 기본으로 사용한다 | 로컬 Docker 및 IPv4 전용 컨테이너 호스팅 환경에서의 연결 실패와 커넥션 고갈을 함께 방지한다 | 2026-10-25 | decided |
 | **ARCH-3** | 백엔드 컨테이너 배포 플랫폼은 **Render**(Free 또는 Starter 고정형 단일 인스턴스, Auto-scaling 비활성)로 확정한다 | GitHub 연동 배포가 단순하고 무제한 종량제 오토스케일링이 없어 과금 폭탄 위험을 원천 차단할 수 있다 | 2026-10-25 | decided |
 | **ARCH-4** | 프론트엔드 UI 는 배포 전에 **`shadcn/ui`**(Radix UI + Tailwind CSS 기반)를 도입하여 컴포넌트를 표준화하고 로컬 기능 점검을 마친 뒤 배포한다 | 일관된 다크 테마 디자인 토큰과 접근성이 검증된 부품(`Button`, `Input`, `Card`, `Badge`, `Table`, `Checkbox`)으로 화면 완성도를 높인 뒤 배포한다 | 2026-10-25 | decided |
+| **ARCH-5** | To-Do + 캘린더 워크스페이스는 파스텔 민트(`#8ee3be`) 다크 테마를 기본으로 하며, 멀티데이 일정(`started_on ~ due_date`), 카테고리(`VARCHAR + Literal`), 소프트 삭제 3종 세트(`deleted_at`, `deleted_by`, `delete_reason`) 및 읽기 조립(`todo_queries.py`)과 쓰기 트랜잭션(`todo_service.py`) 분리 구조를 채택한다 | `model-hub` 에서 검증된 캘린더 Span Bar · 미지정 백로그 UX 와 백엔드/DB 규칙(`P/R/C`, `S1~S8`)을 결합해 일관된 일정 관리와 안전한 데이터 수명주기를 보장한다 | 2026-10-25 | decided |
 
